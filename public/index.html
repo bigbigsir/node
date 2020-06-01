@@ -2,9 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Title</title>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsencrypt@3.0.0-rc.1/bin/jsencrypt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
 </head>
 <body>
-$END$
+
+<button id="button">发送请求</button>
+<script>
+  const key = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDTacKAITLQ0GC8BJ0Jy/0EkSv1yDTI77rtpO9+99dhRYRyRoAGnzrzZpo+0+i7TQwULxJAN43IvRHstpK/YmGjH4jXTPtTNWhJZR5OJ8e0lUT36WYLLR5f2LxwJZ+ftrUMj719EM6TYz51paTUI7UE3WkPHzPmmjhDXR7L7JBmKwIDAQAB'
+  const crypto = new JSEncrypt()
+  crypto.setPublicKey(key)
+  const str = crypto.encrypt('as123456')
+  const data = {
+    num: 10,
+    str: str
+  }
+  const token = null
+  const qid = md5(Date.now() + Math.random() + '')
+  const sign = qid + reverseString(JSON.stringify(data)) + token
+  $('#button').on('click', function () {
+    $.ajax({
+      type: 'post',
+      url: '/test',
+      headers: {
+        token: token,
+        qid: qid,
+        sign: md5(sign)
+      },
+      contentType: 'application/json;charset=UTF-8',
+      data: JSON.stringify({
+        ...data
+      }),
+      success (data) {
+        console.log(data)
+      }
+    })
+  })
+
+  function reverseString (string = '') {
+    return string.toString().split('').sort().reverse().join('')
+  }
+</script>
+
 </body>
 </html>

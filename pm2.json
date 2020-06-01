@@ -2,27 +2,8 @@
   "apps": [
     {
       "cwd": "./",
-      "name": "port_80",
-      "script": "port_80.js",
-      "merge_logs": true,
-      "watch": true,
-      "ignore_watch": [
-        "logs",
-        "public",
-        "node_modules"
-      ],
-      "out_file": "./logs/port_80/out.log",
-      "error_file": "./logs/port_80/error.log",
-      "log_date_format": "YYYY-MM-DD HH:mm:ss",
-      "env": {
-        "NODE_ENV": "production",
-        "NETWORK_ENV": "inner"
-      }
-    },
-    {
-      "cwd": "./",
       "name": "port_3000",
-      "script": "port_3000.js",
+      "script": "app.js",
       "merge_logs": true,
       "watch": true,
       "ignore_watch": [
@@ -34,7 +15,7 @@
       "error_file": "./logs/port_3000/error.log",
       "log_date_format": "YYYY-MM-DD HH:mm:ss",
       "env": {
-        "NODE_ENV": "production",
+        "NODE_ENV": "development",
         "NETWORK_ENV": "inner"
       }
     }
