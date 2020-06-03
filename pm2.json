@@ -13,7 +13,7 @@
       ],
       "out_file": "./logs/port_3000/out.log",
       "error_file": "./logs/port_3000/error.log",
-      "log_date_format": "YYYY-MM-DD HH:mm:ss",
+      "log_date_format": "YYYY-MM-DD hh:mm:ss",
       "env": {
         "NODE_ENV": "development",
         "NETWORK_ENV": "inner"

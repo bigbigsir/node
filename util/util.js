@@ -8,12 +8,19 @@ const crypto = require('crypto')
  * @return {string} 解密后的原文
  * */
 function privateDecrypt (cipherText) {
+  let decrypted
   const privateKey = fs.readFileSync(path.resolve('./pem/rsa_private_key.pem')).toString()
   const buffer = Buffer.from(cipherText, 'base64')
-  const decrypted = crypto.privateDecrypt({
-    key: privateKey,
-    padding: crypto.constants.RSA_PKCS1_PADDING
-  }, buffer)
+  try {
+    decrypted = crypto.privateDecrypt({
+      key: privateKey,
+      padding: crypto.constants.RSA_PKCS1_PADDING
+    }, buffer)
+  } catch (e) {
+    console.log(e.reason)
+    decrypted = cipherText
+  }
+
   return decrypted.toString()
 }
 
@@ -25,7 +32,8 @@ function getClientIp (req) {
   return req.headers['x-forwarded-for'] ||
     req.connection.remoteAddress ||
     req.socket.remoteAddress ||
-    req.connection.socket.remoteAddress || ''
+    req.connection.socket.remoteAddress ||
+    null
 }
 
 /**
@@ -42,12 +50,12 @@ function reverseString (str = '') {
  * @param {string} str
  * @return {String}
  */
-function md5Sign (str) {
+function md5Encrypt (str) {
   return crypto.createHash('md5').update(str, 'utf8').digest('hex')
 }
 
 module.exports = {
-  md5Sign,
+  md5Encrypt,
   getClientIp,
   reverseString,
   privateDecrypt

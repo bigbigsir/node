@@ -9,6 +9,8 @@ const interfaces = require('os').networkInterfaces()
 
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
+const commonRouter = require('./routes/common')
+const webhooksRouter = require('./routes/webhooks')
 
 const port = 3003
 const app = express()
@@ -26,6 +28,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
+app.use('/common', commonRouter)
+app.use('/webHooks', webhooksRouter)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
