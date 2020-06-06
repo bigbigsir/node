@@ -22,7 +22,15 @@ const code = {
   },
   N_000004: { // token数据已标记为失效
     code: 'N_000004',
-    message: 'token无效，请重试'
+    message: 'token无效，请重新登录'
+  },
+  N_000005: {
+    code: 'N_000005',
+    message: '图形验证码不正确'
+  },
+  N_000006: {
+    code: 'N_000006',
+    message: '图形验证码已过期'
   }
 }
 

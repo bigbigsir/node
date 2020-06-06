@@ -7,7 +7,7 @@ const crypto = require('crypto')
  * @param {string} cipherText 密文
  * @return {string} 解密后的原文
  * */
-function privateDecrypt (cipherText) {
+function privateDecrypt (cipherText = '') {
   let decrypted
   const privateKey = fs.readFileSync(path.resolve('./pem/rsa_private_key.pem')).toString()
   const buffer = Buffer.from(cipherText, 'base64')
@@ -54,7 +54,18 @@ function md5Encrypt (str) {
   return crypto.createHash('md5').update(str, 'utf8').digest('hex')
 }
 
+/**
+ * @description 生成指定位数随机数
+ * @param {Number} count 生成位数
+ * @return {String}
+ */
+function random (count = 6) {
+  const random = Math.floor(Math.random() * (1 + '0'.repeat(count)))
+  return random.toString()
+}
+
 module.exports = {
+  random,
   md5Encrypt,
   getClientIp,
   reverseString,

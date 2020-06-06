@@ -30,8 +30,8 @@ function createRoute (routes = []) {
       }
       promise.then(({ code, ...args }) => {
         res.json({
-          code,
           data: null,
+          code: code.toString(),
           message: errorCode[code].message,
           ...args
         })

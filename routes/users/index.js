@@ -1,7 +1,9 @@
 const { createRoute } = require('../route_util')
 const {
   signIn,
-  signUp
+  signUp,
+  signOut,
+  getUserInfo
 } = require('./actions')
 
 const routes = [
@@ -19,14 +21,15 @@ const routes = [
   },
   {
     method: 'post',
-    path: '/signIn123',
+    path: '/signOut',
     loginAuth: true,
-    action (req, res, next) {
-      return Promise.resolve({
-        code: 0,
-        data: 123
-      })
-    }
+    action: signOut
+  },
+  {
+    method: 'post',
+    path: '/getUserInfo',
+    loginAuth: true,
+    action: getUserInfo
   }
 ]
 

@@ -8,12 +8,14 @@
   <script src="https://cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
 </head>
 <body>
-
+<img id="img" src="" alt="">
+<div id="div"></div>
 <button id="button">发送请求</button>
 <script>
   const key = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDTacKAITLQ0GC8BJ0Jy/0EkSv1yDTI77rtpO9+99dhRYRyRoAGnzrzZpo+0+i7TQwULxJAN43IvRHstpK/YmGjH4jXTPtTNWhJZR5OJ8e0lUT36WYLLR5f2LxwJZ+ftrUMj719EM6TYz51paTUI7UE3WkPHzPmmjhDXR7L7JBmKwIDAQAB'
   const crypto = new JSEncrypt()
   crypto.setPublicKey(key)
+  let token = null
   $('#button').on('click', function () {
     let data = {}
     const token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1OTExMDg0NjMsImlwIjoiMTkyLjE2OC4yNTQuMTA1In0.gcH5tr6Iv_ym6icmhFYLwg5-6mLT2NVDf367y9cnPr4EbgzpkigqLmqQENC8Rok7MunXeRcD6-yK3uBOKpZpeI3UN_y2cnBEZVeJC2NdMbYmy5-fSCZ44nSho-mq6knQ37Vg43OVdKVLu_WTP08THiZ9kT-5tZQN05sgATQAcH4'
@@ -36,17 +38,10 @@
     })
   })
   getWebToken()
-  $.ajax({
-    type: 'post',
-    url: '/webHooks/node',
-    success (data) {
-      console.log(data)
-    }
-  })
+
   function getWebToken () {
     let data = {}
     data = JSON.stringify(data)
-    const token = null
     const qid = md5(Date.now() + Math.random() + '')
     const sign = md5(qid + reverseString(data) + token)
     $.ajax({
@@ -60,8 +55,55 @@
       data,
       contentType: 'application/json;charset=UTF-8',
       success ({ data }) {
-        signIn(data)
-        signUp(data)
+        token = data
+        signIn(token)
+        // signUp(token)
+        getCaptcha(token)
+      }
+    })
+  }
+
+  function getCaptcha (token) {
+    let data = {}
+    data = JSON.stringify(data)
+    const qid = md5(Date.now() + Math.random() + '')
+    const sign = md5(qid + reverseString(data) + token)
+    $.ajax({
+      type: 'post',
+      url: '/common/getCaptcha',
+      headers: {
+        token: token,
+        qid: qid,
+        sign: sign
+      },
+      data,
+      contentType: 'application/json;charset=UTF-8',
+      success ({ data }) {
+        document.getElementById('div').innerHTML = data.image
+        verifyCaptcha(token)
+      }
+    })
+  }
+
+  function verifyCaptcha (token) {
+    let data = {
+      captchaId: '5ed86d11a0e60b3b69df8620',
+      captcha: '12'
+    }
+    data = JSON.stringify(data)
+    const qid = md5(Date.now() + Math.random() + '')
+    const sign = md5(qid + reverseString(data) + token)
+    $.ajax({
+      type: 'post',
+      url: '/common/verifyCaptcha',
+      headers: {
+        token: token,
+        qid: qid,
+        sign: sign
+      },
+      data,
+      contentType: 'application/json;charset=UTF-8',
+      success ({ data }) {
       }
     })
   }
@@ -86,8 +128,9 @@
       data,
       contentType: 'application/json;charset=UTF-8',
       success (data) {
-        console.log(data)
-        setTimeout(() => signIn1(token), 3000)
+        signOut()
+        // getUserInfo()
+        setTimeout(() => getUserInfo(), 4)
       }
     })
   }
@@ -118,18 +161,40 @@
     })
   }
 
-  function signIn1 (token) {
-    // token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1OTExNzQzNzMsImlwIjoiMTkyLjE2OC4yNTQuMTA1In0.O8EXjkgtaHelDlmk8w-8z89-GjzvKc-Z4RWHonFCWExOF8eWxvmmNU_trqXj3d3tW9nYiHah_6TlL2Hu-aBsGEd2ghvrrz4hNGG2m-tCpDtA9EtJMclqzrcj2w6P4xBhyxQSvNxeXITTzPH6hG9DLMQKFDCClSRJGF-CrBtFw4g'
+  function signOut () {
     let data = {
-      username: 'admin1591177482319',
-      password: crypto.encrypt('123456')
+      username: 'admin1591177482319'
     }
     data = JSON.stringify(data)
     const qid = md5(Date.now() + Math.random() + '')
     const sign = md5(qid + reverseString(data) + token)
     $.ajax({
       type: 'post',
-      url: '/users/signIn123',
+      url: '/users/signOut',
+      headers: {
+        appId: 'PC01',
+        token: token,
+        qid: qid,
+        sign: sign
+      },
+      data,
+      contentType: 'application/json;charset=UTF-8',
+      success (data) {
+      }
+    })
+  }
+
+  function getUserInfo () {
+    // token = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1OTExNzQzNzMsImlwIjoiMTkyLjE2OC4yNTQuMTA1In0.O8EXjkgtaHelDlmk8w-8z89-GjzvKc-Z4RWHonFCWExOF8eWxvmmNU_trqXj3d3tW9nYiHah_6TlL2Hu-aBsGEd2ghvrrz4hNGG2m-tCpDtA9EtJMclqzrcj2w6P4xBhyxQSvNxeXITTzPH6hG9DLMQKFDCClSRJGF-CrBtFw4g'
+    let data = {
+      username: 'admin1591177482319'
+    }
+    data = JSON.stringify(data)
+    const qid = md5(Date.now() + Math.random() + '')
+    const sign = md5(qid + reverseString(data) + token)
+    $.ajax({
+      type: 'post',
+      url: '/users/getUserInfo',
       headers: {
         appId: 'PC01',
         token: token,
