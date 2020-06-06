@@ -15,11 +15,12 @@ router.use((req, res, next) => {
   const token = req.get('token')
   const ip = getClientIp(req)
   const signServer = qid + reverseString(JSON.stringify(req.body)) + token
-  const publicPath = ['/webHooks/node']
+  const publicPath = '^/webHooks/'
   const passTokenPath = ['/common/getWebToken']
   const payload = jwt.verifyToken(token) || {}
   const verifyToken = passTokenPath.includes(req.url) || ip === payload.ip
-  const verified = publicPath.includes(req.url) || (md5Encrypt(signServer) === sign && verifyToken)
+  const verified = new RegExp(publicPath).test(req.url) ||
+    (md5Encrypt(signServer) === sign && verifyToken)
 
   if (verified) {
     next()

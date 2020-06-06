@@ -10,11 +10,23 @@ morgan.token('qid', (req) => {
 })
 
 morgan.token('query', (req) => {
-  return JSON.stringify(req.query)
+  const query = req.query
+  const queryStr = JSON.stringify(query)
+  if (Object.keys(query).length) {
+    return '\nquery=> '.blue + queryStr
+  } else {
+    return ' '
+  }
 })
 
 morgan.token('body', (req) => {
-  return JSON.stringify(req.body)
+  const body = req.body
+  const bodyStr = JSON.stringify(body)
+  if (Object.keys(body).length) {
+    return '\nbody=> '.blue + bodyStr
+  } else {
+    return ' '
+  }
 })
 
 const fmt = [
@@ -24,9 +36,9 @@ const fmt = [
   ':method | ',
   ':status | ',
   ':response-time ms | ',
-  ':qid'.blue,
-  '\nquery=> :query',
-  '\nbody=>  :body'
+  ':qid'.green,
+  ':query',
+  ':body'
 ]
 
 morgan.format('pm2', fmt.join(''))

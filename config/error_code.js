@@ -31,6 +31,10 @@ const code = {
   N_000006: {
     code: 'N_000006',
     message: '图形验证码已过期'
+  },
+  N_000007: {
+    code: 'N_000007',
+    message: 'webHooks验证不通过'
   }
 }
 
