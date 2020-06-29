@@ -35,6 +35,10 @@ const code = {
   N_000007: {
     code: 'N_000007',
     message: 'webHooks验证不通过'
+  },
+  N_000008: {
+    code: 'N_000008',
+    message: 'webHooks子进程错误'
   }
 }
 

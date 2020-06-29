@@ -9,6 +9,7 @@ const schema = new mongoose.Schema({
     default: Date.now
   }
 }, {
+  versionKey: false,
   timestamps: {
     createdAt: 'created',
     updatedAt: 'updated'

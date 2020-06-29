@@ -6,6 +6,8 @@
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsencrypt@3.0.0-rc.1/bin/jsencrypt.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.0.0/crypto-js.min.js"></script>
+  <script src="https://cdn.bootcss.com/socket.io/2.3.0/socket.io.js"></script>
 </head>
 <body>
 <img id="img" src="" alt="">
@@ -13,6 +15,11 @@
 <button id="button">发送请求</button>
 <button id="node">更新node代码</button>
 <button id="react">更新react代码</button>
+<div>
+  <pre id="socket"></pre>
+</div>
+<br>
+<br>
 <div>
   <pre id="nodePre"></pre>
 </div>
@@ -45,6 +52,7 @@
       }
     })
   })
+
   getWebToken()
 
   function getWebToken () {
@@ -118,8 +126,8 @@
 
   function signIn (token) {
     let data = {
-      username: 'admin1591177482319',
-      password: crypto.encrypt('123456')
+      username: 'admin1',
+      password: crypto.encrypt('admin1')
     }
     data = JSON.stringify(data)
     const qid = md5(Date.now() + Math.random() + '')
@@ -136,7 +144,7 @@
       data,
       contentType: 'application/json;charset=UTF-8',
       success (data) {
-        signOut()
+        // signOut()
         // getUserInfo()
         setTimeout(() => getUserInfo(), 4)
       }
@@ -224,8 +232,8 @@
 <script>
   const data = {
     'ref': 'refs/heads/master',
-    'before': '27843140bdbcbf82157d5edd4963385e1a316c89',
-    'after': '648ec954aa3f3888bf2f26b89ff862ac8d92158d',
+    'before': '1b389bb6a9131415dcc02d2fbc941b74fd733cd3',
+    'after': 'b6f60c43e9169ccb56350ce5b035c5483761d42c',
     'repository': {
       'id': 166796615,
       'node_id': 'MDEwOlJlcG9zaXRvcnkxNjY3OTY2MTU=',
@@ -295,14 +303,14 @@
       'releases_url': 'https://api.github.com/repos/bigbigsir/nodeJs/releases{/id}',
       'deployments_url': 'https://api.github.com/repos/bigbigsir/nodeJs/deployments',
       'created_at': 1548067217,
-      'updated_at': '2020-05-27T12:07:15Z',
-      'pushed_at': 1590590479,
+      'updated_at': '2020-05-28T05:35:26Z',
+      'pushed_at': 1590659755,
       'git_url': 'git://github.com/bigbigsir/nodeJs.git',
       'ssh_url': 'git@github.com:bigbigsir/nodeJs.git',
       'clone_url': 'https://github.com/bigbigsir/nodeJs.git',
       'svn_url': 'https://github.com/bigbigsir/nodeJs',
       'homepage': '',
-      'size': 75713,
+      'size': 75771,
       'stargazers_count': 2,
       'watchers_count': 2,
       'language': 'JavaScript',
@@ -352,15 +360,15 @@
     'deleted': false,
     'forced': false,
     'base_ref': null,
-    'compare': 'https://github.com/bigbigsir/nodeJs/compare/27843140bdbc...648ec954aa3f',
+    'compare': 'https://github.com/bigbigsir/nodeJs/compare/1b389bb6a913...b6f60c43e916',
     'commits': [
       {
-        'id': '648ec954aa3f3888bf2f26b89ff862ac8d92158d',
-        'tree_id': '226c42edbd3fa380de2ff7770317fc914f98f473',
+        'id': 'b6f60c43e9169ccb56350ce5b035c5483761d42c',
+        'tree_id': 'b968e486dc0eb584c3c9cbe8e250bdeb0f5f2b37',
         'distinct': true,
         'message': '‘update’',
-        'timestamp': '2020-05-27T22:41:13+08:00',
-        'url': 'https://github.com/bigbigsir/nodeJs/commit/648ec954aa3f3888bf2f26b89ff862ac8d92158d',
+        'timestamp': '2020-05-28T17:55:48+08:00',
+        'url': 'https://github.com/bigbigsir/nodeJs/commit/b6f60c43e9169ccb56350ce5b035c5483761d42c',
         'author': {
           'name': 'emoji',
           'email': '519628061@qq.com',
@@ -372,31 +380,22 @@
           'username': 'bigbigsir'
         },
         'added': [
-          'github_push.sh',
-          'routes/util/handels.js',
-          'routes/util/index.js'
+          'public/favicon.ico'
         ],
-        'removed': [
-          'routes/util.js'
-        ],
+        'removed': [],
         'modified': [
-          'app.js',
-          'package.json',
-          'pm2.json',
-          'port_3000.js',
-          'port_4000.js',
-          'port_80.js',
-          'public/index.html'
+          'public/index.html',
+          'routes/util/handels.js'
         ]
       }
     ],
     'head_commit': {
-      'id': '648ec954aa3f3888bf2f26b89ff862ac8d92158d',
-      'tree_id': '226c42edbd3fa380de2ff7770317fc914f98f473',
+      'id': 'b6f60c43e9169ccb56350ce5b035c5483761d42c',
+      'tree_id': 'b968e486dc0eb584c3c9cbe8e250bdeb0f5f2b37',
       'distinct': true,
       'message': '‘update’',
-      'timestamp': '2020-05-27T22:41:13+08:00',
-      'url': 'https://github.com/bigbigsir/nodeJs/commit/648ec954aa3f3888bf2f26b89ff862ac8d92158d',
+      'timestamp': '2020-05-28T17:55:48+08:00',
+      'url': 'https://github.com/bigbigsir/nodeJs/commit/b6f60c43e9169ccb56350ce5b035c5483761d42c',
       'author': {
         'name': 'emoji',
         'email': '519628061@qq.com',
@@ -408,59 +407,172 @@
         'username': 'bigbigsir'
       },
       'added': [
-        'github_push.sh',
-        'routes/util/handels.js',
-        'routes/util/index.js'
+        'public/favicon.ico'
       ],
-      'removed': [
-        'routes/util.js'
-      ],
+      'removed': [],
       'modified': [
-        'app.js',
-        'package.json',
-        'pm2.json',
-        'port_3000.js',
-        'port_4000.js',
-        'port_80.js',
-        'public/index.html'
+        'public/index.html',
+        'routes/util/handels.js'
       ]
     }
   }
-  $('#node').on('click', function () {
+
+  function getWebToken () {
+    let data = {}
+    data = JSON.stringify(data)
+    const qid = md5(Date.now() + Math.random() + '')
+    const sign = md5(qid + reverseString(data) + token)
     $.ajax({
       type: 'post',
-      url: '/webHooks/projectNode',
+      url: '/common/getWebToken',
       headers: {
-        'X-GitHub-Delivery': '9f0313d0-9fde-11ea-9340-c0ca531bde33',
-        'X-GitHub-Event': 'push',
-        'X-Hub-Signature': 'sha1=df1f7c9ec09d3dc892b7ced630347dfc9b9581d2'
+        token: token,
+        qid: qid,
+        sign: sign
       },
+      data,
       contentType: 'application/json;charset=UTF-8',
-      data: JSON.stringify(data),
-      success (data) {
-        if (data.code === '0') {
-          document.getElementById('nodePre').innerText = data.data
-        }
-        console.log(data)
+      success ({ data }) {
+        token = data
       }
+    })
+  }
+
+  getWebToken()
+  $('#node').on('click', function () {
+    //连接服务器,得到代表连接的socket对象
+    const socket = io('/socket/webHooks', {
+      autoConnect: false,
+      reconnection: false,
+      query: {
+        token: 'cde'
+      },
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            token
+          }
+        }
+      }
+    })
+    const socketEl = document.getElementById('socket')
+    socket.connect()
+    socket.on('connect', () => {
+      $.ajax({
+        type: 'post',
+        url: '/webHooks/projectNode',
+        headers: {
+          'socket-id': socket.id,
+          'X-GitHub-Event': 'push',
+          'X-Hub-Signature': 'sha1=a071516470b66fb43a3fd28fbc7c7e13d438adf6'
+        },
+        contentType: 'application/json;charset=UTF-8',
+        data: JSON.stringify(data),
+        success (data) {
+          if (data.code === '0') {
+            // document.getElementById('nodePre').innerText = data.data
+          }
+        }
+      })
+      console.log('connect=>', socket.id, socket.connected)
+    })
+    socket.on('process_stdout', function (data) {
+      console.log('process_stdout=>', data)
+      socketEl.innerText += data
+    })
+    socket.on('process_stderr', function (data) {
+      console.log('process_stderr=>', data)
+      socketEl.innerText += data
+    })
+    socket.on('process_error', function (data) {
+      console.log('process_error=>', data)
+      socketEl.innerText += data
+    })
+    socket.on('process_close', function (data) {
+      console.log('process_close=>', data)
+      socketEl.innerText += data
+    })
+    socket.on('error', function (data) {
+      console.log('error=>', data)
+      socketEl.innerText += data
+    })
+    socket.on('connect_error', (error) => {
+      console.log('connect_error=>', error)
+    })
+    socket.on('disconnect', (reason) => {
+      socket.disconnect()
+      console.log('disconnect=>', reason)
     })
   })
   $('#react').on('click', function () {
-    $.ajax({
-      type: 'post',
-      url: '/webHooks/projectReactWeb',
-      headers: {
-        'X-GitHub-Event': 'push',
-        'X-Hub-Signature': 'sha1=df1f7c9ec09d3dc892b7ced630347dfc9b9581d2'
+    const data = {
+      ref: 'refs/heads/master'
+    }
+    const secret = 'e6f2511e790e05e769416bb4d4603d602943d314'
+    const sha1 = CryptoJS.HmacSHA1(JSON.stringify(data), secret).toString()
+
+    const socket = io('/socket/webHooks', {
+      autoConnect: false,
+      reconnection: false,
+      query: {
+        token: 'cde'
       },
-      contentType: 'application/json;charset=UTF-8',
-      data: JSON.stringify(data),
-      success (data) {
-        if (data.code === '0') {
-          document.getElementById('reactPre').innerText = data.data
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            'x-clientid': 'abc'
+          }
         }
-        console.log(data)
       }
+    })
+    const socketEl = document.getElementById('socket')
+    socket.connect()
+    socket.on('connect', (e) => {
+      console.log(e)
+      $.ajax({
+        type: 'post',
+        url: '/webHooks/projectReactWeb',
+        headers: {
+          'socket-id': socket.id,
+          'X-GitHub-Event': 'push',
+          'X-Hub-Signature': 'sha1=' + sha1
+        },
+        contentType: 'application/json;charset=UTF-8',
+        data: JSON.stringify(data),
+        success (data) {
+          if (data.code === '0') {
+            // document.getElementById('reactPre').innerText = data.data
+          }
+        }
+      })
+      console.log('connect=>', socket.id, socket.connected)
+    })
+    socket.on('process_stdout', function (data) {
+      console.log('process_stdout=>', data)
+      socketEl.innerText += data
+    })
+    socket.on('process_stderr', function (data) {
+      console.log('process_stderr=>', data)
+      socketEl.innerText += data
+    })
+    socket.on('process_error', function (data) {
+      console.log('process_error=>', data)
+      socketEl.innerText += data
+    })
+    socket.on('process_close', function (data) {
+      console.log('process_close=>', data)
+      socketEl.innerText += data
+    })
+    socket.on('error', function (data) {
+      console.log('error=>', data)
+      socketEl.innerText += data
+    })
+    socket.on('connect_error', (error) => {
+      console.log('connect_error=>', error)
+    })
+    socket.on('disconnect', (reason) => {
+      socket.disconnect()
+      console.log('disconnect=>', reason)
     })
   })
 </script>

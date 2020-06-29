@@ -64,8 +64,18 @@ function random (count = 6) {
   return random.toString()
 }
 
+/**
+ * @description 判断入参是否为Promise
+ * @param {Promise} promise
+ * @return {boolean}
+ */
+function isPromise(promise) {
+  return promise && Object.prototype.toString.call(promise) === '[object Promise]'
+}
+
 module.exports = {
   random,
+  isPromise,
   md5Encrypt,
   getClientIp,
   reverseString,

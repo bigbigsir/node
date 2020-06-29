@@ -6,9 +6,9 @@ const schema = new mongoose.Schema({
   },
   token: { type: String },
   username: { type: String },
-  invalid: {
+  valid: {
     type: Boolean,
-    default: false
+    default: true
   },
   exp: { // 设置TTL, 30分钟后失效自动删除
     type: Date,

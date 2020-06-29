@@ -1,6 +1,7 @@
 const express = require('express')
 const errorCode = require('../config/error_code')
 const { verifyLoginAuth } = require('./users/actions')
+const { isPromise } = require('../util/util')
 
 /**
  * @description 生成中间件路由，统一数据返回格式
@@ -16,36 +17,45 @@ const { verifyLoginAuth } = require('./users/actions')
 function createRoute (routes = []) {
   const router = express.Router()
   routes.forEach(item => {
-    router[item.method](item.path, (req, res, next) => {
-      let promise
-      if (item.loginAuth) {
-        promise = verifyLoginAuth(req).then(({ code }) => {
-          if (code === '0') {
-            return item.action(req, res, next)
-          }
-          return Promise.resolve({ code })
-        })
-      } else {
-        promise = item.action(req, res, next)
-      }
-      promise.then(({ code, ...args }) => {
-        res.json({
-          data: null,
-          code: code.toString(),
-          message: errorCode[code].message,
-          ...args
-        })
+    router[item.method](item.path, verifyAuth(item.loginAuth), (req, res, next) => {
+      const promise = item.action(req, res, next)
+      isPromise(promise) && promise.then(data => {
+        res.json(json(data))
       }).catch(e => {
         console.error(e)
-        res.json({
-          data: null,
-          code: errorCode.N_000001.code,
-          message: errorCode.N_000001.message
-        })
+        res.json(json({ code: 'N_000001' }))
       })
     })
   })
   return router
+}
+
+function verifyAuth (isVerify) {
+  return (req, res, next) => {
+    if (isVerify) {
+      verifyLoginAuth(req).then(({ code }) => {
+        if (code === '0') {
+          next()
+        } else {
+          res.json(json({ code }))
+        }
+      }).catch(e => {
+        console.log(e)
+        res.json(json({ code: 'N_000001' }))
+      })
+    } else {
+      next()
+    }
+  }
+}
+
+function json ({ code, ...args }) {
+  return {
+    data: null,
+    code: errorCode[code].code,
+    message: errorCode[code].message,
+    ...args
+  }
 }
 
 module.exports = {

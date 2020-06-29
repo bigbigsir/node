@@ -1,6 +1,7 @@
 const svgCaptcha = require('svg-captcha')
 const jwt = require('../../util/token')
 const Captcha = require('../../mongoose/captcha')
+
 const { getClientIp } = require('../../util/util')
 
 // 获取token
@@ -21,7 +22,6 @@ function createCaptcha () {
     width: 120,
     height: 50,
     fontSize: 50,
-    color: true,
     ignoreChars: '0o1ilI'
   })
   const instance = new Captcha({

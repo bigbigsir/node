@@ -4,7 +4,7 @@ const config = {
   dbOptions: {
     useCreateIndex: true,
     useNewUrlParser: true,
-    useFindAndModify: false,
+    useFindAndModify: true,
     useUnifiedTopology: true
   }
 }
