@@ -2,8 +2,8 @@
   "apps": [
     {
       "cwd": "./",
-      "name": "port_3000",
-      "script": "port_3000.js",
+      "name": "port3010",
+      "script": "app.js",
       "merge_logs": true,
       "watch": false,
       "ignore_watch": [
@@ -13,12 +13,13 @@
       ],
       "exec_mode": "cluster",
       "instances": 2,
-      "out_file": "./logs/port_3000/out.log",
-      "error_file": "./logs/port_3000/error.log",
+      "out_file": "./logs/port_3010/out.log",
+      "error_file": "./logs/port_3010/error.log",
       "log_date_format": "YYYY-MM-DD HH:mm:ss",
       "min_uptime": "60s",
       "max_restarts": 10,
       "env": {
+        "PORT": 3010,
         "NODE_ENV": "production",
         "NETWORK_ENV": "inner"
       }

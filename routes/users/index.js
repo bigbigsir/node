@@ -3,7 +3,11 @@ const {
   signIn,
   signUp,
   signOut,
-  getUserInfo
+  addUser,
+  removeUser,
+  updateUser,
+  getUserInfo,
+  getUserList
 } = require('./actions')
 
 const routes = [
@@ -27,9 +31,33 @@ const routes = [
   },
   {
     method: 'post',
+    path: '/addUser',
+    loginAuth: true,
+    action: addUser
+  },
+  {
+    method: 'post',
+    path: '/updateUser',
+    loginAuth: true,
+    action: updateUser
+  },
+  {
+    method: 'post',
+    path: '/removeUser',
+    loginAuth: true,
+    action: removeUser
+  },
+  {
+    method: 'post',
     path: '/getUserInfo',
     loginAuth: true,
     action: getUserInfo
+  },
+  {
+    method: 'post',
+    path: '/getUserList',
+    loginAuth: true,
+    action: getUserList
   }
 ]
 

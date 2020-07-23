@@ -1,34 +1,21 @@
 const { createRoute } = require('../route_util')
 const {
-  use,
-  projectNode,
-  projectVueH5,
-  projectReactWeb
+  webProject,
+  nodeProject
 } = require('./actions')
 
 const routes = [
   {
-    method: 'use',
-    path: '/',
-    action: use
+    method: 'post',
+    path: '/webProject/:key',
+    loginAuth: false,
+    action: webProject
   },
   {
     method: 'post',
-    path: '/projectNode',
+    path: '/nodeProject/:key',
     loginAuth: false,
-    action: projectNode
-  },
-  {
-    method: 'post',
-    path: '/projectReactWeb',
-    loginAuth: false,
-    action: projectReactWeb
-  },
-  {
-    method: 'post',
-    path: '/projectVueH5',
-    loginAuth: false,
-    action: projectVueH5
+    action: nodeProject
   }
 ]
 

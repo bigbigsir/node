@@ -462,6 +462,7 @@
         type: 'post',
         url: '/webHooks/projectNode',
         headers: {
+          token,
           'socket-id': socket.id,
           'X-GitHub-Event': 'push',
           'X-Hub-Signature': 'sha1=a071516470b66fb43a3fd28fbc7c7e13d438adf6'

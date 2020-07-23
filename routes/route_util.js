@@ -23,7 +23,10 @@ function createRoute (routes = []) {
         res.json(json(data))
       }).catch(e => {
         console.error(e)
-        res.json(json({ code: 'N_000001' }))
+        res.json(json({
+          code: 'N_000001',
+          error: e
+        }))
       })
     })
   })
@@ -59,5 +62,6 @@ function json ({ code, ...args }) {
 }
 
 module.exports = {
+  json,
   createRoute
 }

@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const jwt = require('../util/token')
+const { json } = require('./route_util')
 
 const {
   md5Encrypt,
@@ -39,11 +40,12 @@ function verifyAuth (req, res, next) {
   const passTokenPath = ['/common/getWebToken']
   const verifySign = new RegExp(publicPath).test(req.url) || md5Encrypt(signStr) === sign
   const verifyToken = passTokenPath.includes(req.path) || ip === payload.ip
+
   // 验证接口签名
   if (!verifySign) {
     res.sendStatus(403)
   } else if (!verifyToken) {
-    res.sendStatus(401)
+    res.json(json({ code: 'N_000015' }))
   } else {
     next()
   }

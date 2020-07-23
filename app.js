@@ -36,11 +36,26 @@ const server = app.listen(port, '0.0.0.0', () => {
   console.log(' - Local:    ' + `http://localhost:${port}`.underline.green.bold)
   console.log(' - Network:  ' + `http://${iPAddress}:${port}`.underline.green.bold)
 })
+const io = socket(server, {
+  handlePreflightRequest: (req, res) => {
+    const headers = {
+      'Access-Control-Allow-Headers': 'token',
+      'Access-Control-Allow-Origin': req.headers.origin, // or the specific Origin you want to give access to,
+      'Access-Control-Allow-Credentials': true
+    }
+    res.writeHead(200, headers)
+    res.end()
+  }
+})
 module.exports.server = server
-module.exports.io = socket(server)
+module.exports.io = io
 
 app.use('/', require('./routes/index'))
 app.use('/users', require('./routes/users'))
+app.use('/menu', require('./routes/menu'))
+app.use('/role', require('./routes/role'))
+app.use('/email', require('./routes/email'))
+app.use('/project', require('./routes/project'))
 app.use('/common', require('./routes/common'))
 app.use('/webHooks', require('./routes/web_hooks'))
 require('./mongoose/test')

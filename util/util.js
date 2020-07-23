@@ -17,7 +17,6 @@ function privateDecrypt (cipherText = '') {
       padding: crypto.constants.RSA_PKCS1_PADDING
     }, buffer)
   } catch (e) {
-    console.log(e.reason)
     decrypted = cipherText
   }
 
