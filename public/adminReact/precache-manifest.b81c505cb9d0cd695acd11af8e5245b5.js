@@ -1,14 +1,14 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "6a6b7b9223057a9290f964f091c43c9e",
+    "revision": "275af3447201ea2806a26d5d1bbd95ab",
     "url": "/adminReact/index.html"
   },
   {
-    "revision": "7c7be63d1f62a9271bf6",
+    "revision": "73dc213a064a94c59915",
     "url": "/adminReact/static/css/compile.1bdb2e5b.chunk.css"
   },
   {
-    "revision": "70c9b05655675585304b",
+    "revision": "c1eed315ac17d13294bc",
     "url": "/adminReact/static/css/layout.1a460f14.chunk.css"
   },
   {
@@ -16,27 +16,27 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/adminReact/static/css/layout.1a460f14.chunk.css.gz"
   },
   {
-    "revision": "50141ab474e8c63d7b9e",
+    "revision": "3590ccbd049eefee7ab2",
     "url": "/adminReact/static/css/login.a3ccdfd9.chunk.css"
   },
   {
-    "revision": "92461910bdcc281b2e66",
+    "revision": "d0ea9c2d047ad8ccd1fa",
     "url": "/adminReact/static/css/main.bed552f2.chunk.css"
   },
   {
-    "revision": "56ad675057b0cf09e599",
+    "revision": "f6c0df4338eb89de3a2c",
     "url": "/adminReact/static/css/menu.71961e18.chunk.css"
   },
   {
-    "revision": "4d0296603eb636473cfb",
+    "revision": "1792c11b51f22a0dd14d",
     "url": "/adminReact/static/css/projects.daa080dd.chunk.css"
   },
   {
-    "revision": "606a4aa72df57e2ba278",
+    "revision": "dad9ac3b4ab55089f04a",
     "url": "/adminReact/static/css/register.a3ccdfd9.chunk.css"
   },
   {
-    "revision": "0b1d3d569794c789c6d4",
+    "revision": "af962394fcd6647f95b6",
     "url": "/adminReact/static/css/roles.cd922bc2.chunk.css"
   },
   {
@@ -44,72 +44,72 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/adminReact/static/css/user.a3ccdfd9.chunk.css"
   },
   {
-    "revision": "7c7be63d1f62a9271bf6",
-    "url": "/adminReact/static/js/compile.0c22ee61.chunk.js"
+    "revision": "73dc213a064a94c59915",
+    "url": "/adminReact/static/js/compile.d6a22281.chunk.js"
   },
   {
-    "revision": "70c9b05655675585304b",
-    "url": "/adminReact/static/js/layout.563ae840.chunk.js"
+    "revision": "c1eed315ac17d13294bc",
+    "url": "/adminReact/static/js/layout.b7eca647.chunk.js"
   },
   {
-    "revision": "3132d03807984f5dbe15771649771746",
-    "url": "/adminReact/static/js/layout.563ae840.chunk.js.gz"
+    "revision": "0d9ea484e77e13769aeafd1c11311209",
+    "url": "/adminReact/static/js/layout.b7eca647.chunk.js.gz"
   },
   {
-    "revision": "50141ab474e8c63d7b9e",
-    "url": "/adminReact/static/js/login.4541c642.chunk.js"
+    "revision": "3590ccbd049eefee7ab2",
+    "url": "/adminReact/static/js/login.9b65711e.chunk.js"
   },
   {
-    "revision": "c139d26cb3cb92184d9f97b1060065c2",
-    "url": "/adminReact/static/js/login.4541c642.chunk.js.gz"
+    "revision": "667070d9be192f1017e2817ff83e7d2c",
+    "url": "/adminReact/static/js/login.9b65711e.chunk.js.gz"
   },
   {
-    "revision": "92461910bdcc281b2e66",
-    "url": "/adminReact/static/js/main.4cf29963.chunk.js"
+    "revision": "d0ea9c2d047ad8ccd1fa",
+    "url": "/adminReact/static/js/main.84f57d1a.chunk.js"
   },
   {
-    "revision": "d486720587594686f7df50b9b4a0f186",
-    "url": "/adminReact/static/js/main.4cf29963.chunk.js.gz"
+    "revision": "2d320eba4434a33034831f4f47f97e64",
+    "url": "/adminReact/static/js/main.84f57d1a.chunk.js.gz"
   },
   {
-    "revision": "56ad675057b0cf09e599",
-    "url": "/adminReact/static/js/menu.57e830b3.chunk.js"
+    "revision": "f6c0df4338eb89de3a2c",
+    "url": "/adminReact/static/js/menu.6473ca4c.chunk.js"
   },
   {
-    "revision": "33f8ff4878b2a9ab2cdfcf119649cf56",
-    "url": "/adminReact/static/js/menu.57e830b3.chunk.js.gz"
+    "revision": "0e70078e5927d5f8404be8dcd545a776",
+    "url": "/adminReact/static/js/menu.6473ca4c.chunk.js.gz"
   },
   {
     "revision": "4995531456151af36252",
     "url": "/adminReact/static/js/page404.158ee5e8.chunk.js"
   },
   {
-    "revision": "4d0296603eb636473cfb",
-    "url": "/adminReact/static/js/projects.ef7cbdc1.chunk.js"
+    "revision": "1792c11b51f22a0dd14d",
+    "url": "/adminReact/static/js/projects.7ab006e5.chunk.js"
   },
   {
-    "revision": "6ee08cd07b3730724cd78bd80f67749b",
-    "url": "/adminReact/static/js/projects.ef7cbdc1.chunk.js.gz"
+    "revision": "cac5fc3ea04f095959489780fd123a6a",
+    "url": "/adminReact/static/js/projects.7ab006e5.chunk.js.gz"
   },
   {
-    "revision": "606a4aa72df57e2ba278",
-    "url": "/adminReact/static/js/register.0d57722e.chunk.js"
+    "revision": "dad9ac3b4ab55089f04a",
+    "url": "/adminReact/static/js/register.ceda371d.chunk.js"
   },
   {
-    "revision": "3b337ed90912971e52bb29fe6050d01a",
-    "url": "/adminReact/static/js/register.0d57722e.chunk.js.gz"
+    "revision": "7a71f76eb733ea4aa8549c1efb16e819",
+    "url": "/adminReact/static/js/register.ceda371d.chunk.js.gz"
   },
   {
-    "revision": "0b1d3d569794c789c6d4",
-    "url": "/adminReact/static/js/roles.c4f80181.chunk.js"
+    "revision": "af962394fcd6647f95b6",
+    "url": "/adminReact/static/js/roles.e05cf9fa.chunk.js"
   },
   {
-    "revision": "0adf31903ed7ce3fb602e05623b2cb48",
-    "url": "/adminReact/static/js/roles.c4f80181.chunk.js.gz"
+    "revision": "3883927abffeb8683e97e0f98b5849a1",
+    "url": "/adminReact/static/js/roles.e05cf9fa.chunk.js.gz"
   },
   {
-    "revision": "3cd3f12f5c728b6999e9",
-    "url": "/adminReact/static/js/runtime-main.fba35fd8.js"
+    "revision": "059a7377632a5297747a",
+    "url": "/adminReact/static/js/runtime-main.912251f6.js"
   },
   {
     "revision": "283aef0bc26dcf0ad55e",
@@ -156,7 +156,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/adminReact/static/media/menu_in_left_full_head.050e8944.svg"
   },
   {
-    "revision": "041fa575919a618fcc942e91d729bf53",
+    "revision": "23b9268cd57a7ca6308b06029b19439b",
     "url": "/adminReact/version.html"
   }
 ]);
