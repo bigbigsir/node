@@ -2,7 +2,7 @@
   "apps": [
     {
       "cwd": "./",
-      "name": "port3010",
+      "name": "port3030",
       "script": "app.js",
       "merge_logs": true,
       "watch": false,
@@ -19,7 +19,30 @@
       "min_uptime": "60s",
       "max_restarts": 10,
       "env": {
-        "PORT": 3010,
+        "PORT": 3030,
+        "NODE_ENV": "production",
+        "NETWORK_ENV": "inner"
+      }
+    },
+    {
+      "cwd": "./",
+      "name": "port3000",
+      "script": "app.js",
+      "merge_logs": true,
+      "watch": false,
+      "ignore_watch": [
+        "logs",
+        "public",
+        "node_modules"
+      ],
+      "exec_mode": "fork",
+      "out_file": "./logs/port_3000/out.log",
+      "error_file": "./logs/port_3000/error.log",
+      "log_date_format": "YYYY-MM-DD HH:mm:ss",
+      "min_uptime": "60s",
+      "max_restarts": 10,
+      "env": {
+        "PORT": 3000,
         "NODE_ENV": "production",
         "NETWORK_ENV": "inner"
       }

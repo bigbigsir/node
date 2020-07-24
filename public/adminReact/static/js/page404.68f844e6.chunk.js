@@ -1,2 +1,0 @@
-(this.webpackJsonpreact_admin=this.webpackJsonpreact_admin||[]).push([[6],{2357:function(e,t,a){"use strict";a.r(t);var n=a(0),r=a.n(n),i=a(2318),c=a(41),s=a(85);t.default=function(){var e=Object(s.e)();return r.a.createElement(i.a,{status:"404",title:"404",subTitle:"Sorry, the page you visited does not exist.",extra:r.a.createElement(c.a,{onClick:function(){e.replace("/")},type:"primary"},"Back Home")})}}}]);
-//# sourceMappingURL=page404.68f844e6.chunk.js.map
