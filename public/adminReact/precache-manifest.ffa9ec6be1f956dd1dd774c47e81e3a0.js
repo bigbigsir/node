@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "6a6b7b9223057a9290f964f091c43c9e",
+    "revision": "4ee614df15f36f7d721a40dc154153bb",
     "url": "/adminReact/index.html"
   },
   {
-    "revision": "7c7be63d1f62a9271bf6",
+    "revision": "aec874d2878c32b38c9d",
     "url": "/adminReact/static/css/compile.1bdb2e5b.chunk.css"
   },
   {
@@ -20,11 +20,11 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/adminReact/static/css/login.a3ccdfd9.chunk.css"
   },
   {
-    "revision": "92461910bdcc281b2e66",
+    "revision": "819bc1a99572bd1e4d8e",
     "url": "/adminReact/static/css/main.bed552f2.chunk.css"
   },
   {
-    "revision": "56ad675057b0cf09e599",
+    "revision": "58478576b7655468068c",
     "url": "/adminReact/static/css/menu.71961e18.chunk.css"
   },
   {
@@ -44,8 +44,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/adminReact/static/css/user.a3ccdfd9.chunk.css"
   },
   {
-    "revision": "7c7be63d1f62a9271bf6",
-    "url": "/adminReact/static/js/compile.0c22ee61.chunk.js"
+    "revision": "aec874d2878c32b38c9d",
+    "url": "/adminReact/static/js/compile.8d4b5d27.chunk.js"
   },
   {
     "revision": "70c9b05655675585304b",
@@ -64,20 +64,20 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/adminReact/static/js/login.4541c642.chunk.js.gz"
   },
   {
-    "revision": "92461910bdcc281b2e66",
-    "url": "/adminReact/static/js/main.4cf29963.chunk.js"
+    "revision": "819bc1a99572bd1e4d8e",
+    "url": "/adminReact/static/js/main.11ab3415.chunk.js"
   },
   {
-    "revision": "d486720587594686f7df50b9b4a0f186",
-    "url": "/adminReact/static/js/main.4cf29963.chunk.js.gz"
+    "revision": "7636bfc2c7ea256edabcc53ab4087da3",
+    "url": "/adminReact/static/js/main.11ab3415.chunk.js.gz"
   },
   {
-    "revision": "56ad675057b0cf09e599",
-    "url": "/adminReact/static/js/menu.57e830b3.chunk.js"
+    "revision": "58478576b7655468068c",
+    "url": "/adminReact/static/js/menu.d454c851.chunk.js"
   },
   {
-    "revision": "33f8ff4878b2a9ab2cdfcf119649cf56",
-    "url": "/adminReact/static/js/menu.57e830b3.chunk.js.gz"
+    "revision": "4d22816a99793bb743a404dbc48c03bd",
+    "url": "/adminReact/static/js/menu.d454c851.chunk.js.gz"
   },
   {
     "revision": "4995531456151af36252",
@@ -108,8 +108,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/adminReact/static/js/roles.c4f80181.chunk.js.gz"
   },
   {
-    "revision": "3cd3f12f5c728b6999e9",
-    "url": "/adminReact/static/js/runtime-main.fba35fd8.js"
+    "revision": "0395702c5151887ca218",
+    "url": "/adminReact/static/js/runtime-main.b38f9777.js"
   },
   {
     "revision": "283aef0bc26dcf0ad55e",
@@ -156,7 +156,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/adminReact/static/media/menu_in_left_full_head.050e8944.svg"
   },
   {
-    "revision": "041fa575919a618fcc942e91d729bf53",
+    "revision": "a2a7205837b108951f0436e20fc6d772",
     "url": "/adminReact/version.html"
   }
 ]);

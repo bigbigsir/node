@@ -53,8 +53,8 @@ const fmt = [
   ':response-time ms | ',
   ':qid'.green,
   ':query',
-  ':body',
-  ':response'
+  ':body'
+  // ':response'
 ]
 
 morgan.format('pm2', fmt.join(''))
