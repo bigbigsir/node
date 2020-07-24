@@ -5,6 +5,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+public/adminReact
+public/h5
+public/web
+
 # Runtime data
 pids
 *.pid
