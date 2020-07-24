@@ -20,6 +20,7 @@ function createRoute (routes = []) {
     router[item.method](item.path, verifyAuth(item.loginAuth), (req, res, next) => {
       const promise = item.action(req, res, next)
       isPromise(promise) && promise.then(data => {
+        res.locals = json(data) // 返回值记录到日志中
         res.json(json(data))
       }).catch(e => {
         console.error(e)
