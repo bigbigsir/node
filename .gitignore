@@ -5,9 +5,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-public/adminReact
-public/h5
-public/web
+public
 
 # Runtime data
 pids
