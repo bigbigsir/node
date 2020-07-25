@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>版本声明</title>
+    <link rel="icon" href="./favicon.ico">
+    <style>
+        html,
+        body {
+            box-sizing: border-box;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        body {
+            padding: 10px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+<table>
+    <tbody>
+    <tr>
+        <td>
+            <span>project：</span>
+        </td>
+        <td><%= htmlWebpackPlugin.options.version.project %></td>
+    </tr>
+    <tr>
+        <td>
+            <span>commit：</span>
+        </td>
+        <td>
+            <span><%= htmlWebpackPlugin.options.version.commit %></span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span>committer：</span>
+        </td>
+        <td>
+            <span><%= htmlWebpackPlugin.options.version.committer %></span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span>committerEmail：</span>
+        </td>
+        <td>
+            <a href="mailto:<%= htmlWebpackPlugin.options.version.committerEmail %>?subject=版本信息反馈&amp;" target="_blank">
+                <%= htmlWebpackPlugin.options.version.committerEmail %>
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span>commitDate：</span>
+        </td>
+        <td>
+            <span><%= htmlWebpackPlugin.options.version.commitDate %></span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span>builder：</span>
+        </td>
+        <td>
+            <span><%= htmlWebpackPlugin.options.version.builder %></span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span>builderEmail：</span>
+        </td>
+        <td>
+            <a href="mailto:<%= htmlWebpackPlugin.options.version.builderEmail %>?subject=打包信息反馈&amp;" target="_blank">
+                <%= htmlWebpackPlugin.options.version.builderEmail %>
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span>buildDate：</span>
+        </td>
+        <td>
+            <span><%= htmlWebpackPlugin.options.version.buildDate %></span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

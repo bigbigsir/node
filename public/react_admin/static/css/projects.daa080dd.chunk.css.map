@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../assets/css/common.module.scss"],"names":[],"mappings":"AAAA,sBACE,WAAY,CACZ,qBAAsB,CAEtB,8BACE,gBAAiB","file":"projects.daa080dd.chunk.css","sourcesContent":[".page {\n  margin: 10px;\n  background-color: #fff;\n\n  &__header {\n    padding: 10px 8px;\n  }\n}\n"]}
