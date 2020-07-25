@@ -28,6 +28,7 @@ function privateDecrypt (cipherText = '') {
  * @return {string}
  * */
 function getClientIp (req) {
+  console.log('X-Real-IP', req.headers['X-Real-IP'])
   return req.headers['X-Real-IP'] ||
     req.connection.remoteAddress ||
     req.socket.remoteAddress ||
@@ -68,7 +69,7 @@ function random (count = 6) {
  * @param {Promise} promise
  * @return {boolean}
  */
-function isPromise(promise) {
+function isPromise (promise) {
   return promise && Object.prototype.toString.call(promise) === '[object Promise]'
 }
 
