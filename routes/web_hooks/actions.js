@@ -13,7 +13,6 @@ const nsp = io.of('/socket/webHooks')
 nsp.use((socket, next) => {
   const payload = jwt.verifyToken(socket.request.headers.token) || {}
   const ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address
-  console.log(payload.ip, ip)
   if (payload.ip === ip.split(',')[0]) {
     next()
   } else {
