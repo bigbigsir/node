@@ -6,7 +6,7 @@ morgan.token('date', () => {
   return moment().format('YYYY-MM-DD hh:mm:ss')
 })
 
-morgan.token('ip', (req, res) => {
+morgan.token('ip', (req) => {
   return getClientIp(req)
 })
 

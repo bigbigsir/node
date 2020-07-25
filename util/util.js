@@ -28,8 +28,9 @@ function privateDecrypt (cipherText = '') {
  * @return {string}
  * */
 function getClientIp (req) {
-  console.log('X-Real-IP', req.headers)
-  return req.headers['X-Real-IP'] ||
+  let ip = req.get('x-forwarded-for')
+  ip = ip && ip.split(',')[0]
+  return ip ||
     req.connection.remoteAddress ||
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress ||
