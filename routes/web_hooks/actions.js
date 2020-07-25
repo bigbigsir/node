@@ -12,6 +12,7 @@ const nsp = io.of('/socket/webHooks')
 
 nsp.use((socket, next) => {
   const payload = jwt.verifyToken(socket.request.headers.token) || {}
+  console.log(socket.handshake)
   console.log('==================')
   console.log(payload.ip, socket.conn.remoteAddress)
   if (payload.ip === socket.conn.remoteAddress) {
