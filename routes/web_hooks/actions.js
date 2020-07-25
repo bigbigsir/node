@@ -45,6 +45,7 @@ function nodeProject (req) {
 // 编译node项目
 function compileNodeProject (req, config) {
   const socketId = req.get('socket-id')
+  const socket = nsp.sockets[socketId]
   const options = {
     cwd: config.projectDir
   }
@@ -60,13 +61,13 @@ function compileNodeProject (req, config) {
   }).then(log => {
     crateVersionHtml()
     runCmd('sh', [pm2Restart], undefined, socketId)
-    nsp.sockets[socketId].disconnect(true)
+    socket && socket.disconnect(true)
     return {
       code: '0',
       data: log
     }
   }).catch(error => {
-    nsp.sockets[socketId].disconnect(true)
+    socket && socket.disconnect(true)
     return {
       code: 'N_000008',
       error: error.toString()
@@ -77,6 +78,7 @@ function compileNodeProject (req, config) {
 // 编译前端项目
 function compileWebProject (req, config) {
   const socketId = req.get('socket-id')
+  const socket = nsp.sockets[socketId]
   const options = {
     cwd: config.projectDir
   }
@@ -89,13 +91,13 @@ function compileWebProject (req, config) {
     const args = [shellFile, needNpmInstall, needReloadNginx]
     return runCmd('sh', args, options, socketId).then(initLog => pullCodeLog + initLog)
   }).then(log => {
-    nsp.sockets[socketId].disconnect(true)
+    socket && socket.disconnect(true)
     return {
       code: '0',
       data: log
     }
   }).catch(error => {
-    nsp.sockets[socketId].disconnect(true)
+    socket && socket.disconnect(true)
     return {
       code: 'N_000008',
       error: error.toString()
