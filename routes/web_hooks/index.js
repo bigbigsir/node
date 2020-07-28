@@ -1,5 +1,6 @@
 const { createRoute } = require('../route_util')
 const {
+  getVersion,
   webProject,
   nodeProject
 } = require('./actions')
@@ -16,6 +17,12 @@ const routes = [
     path: '/nodeProject/:key',
     loginAuth: false,
     action: nodeProject
+  },
+  {
+    method: 'post',
+    path: '/getVersion/:key',
+    loginAuth: true,
+    action: getVersion
   }
 ]
 

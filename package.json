@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "export PORT=3003 NODE_ENV=production && node app.js",
-    "build": "export PORT=3003 NODE_ENV=production && node app.js",
+    "start": "export PORT=3003 NODE_ENV=development && node app.js",
+    "build": "export PORT=3004 NODE_ENV=production && node app.js",
     "pm2": "pm2 start pm2.json"
   },
   "dependencies": {
