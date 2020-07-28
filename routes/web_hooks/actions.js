@@ -20,24 +20,70 @@ nsp.use((socket, next) => {
   }
 })
 
+// 前端项目
 function webProject (req) {
   return getProjectConfig(req).then(({ code, data }) => {
     if (code === '0') {
       return compileWebProject(req, data)
     } else {
-      return data
+      return { code }
     }
   })
 }
 
+// node项目
 function nodeProject (req) {
   return getProjectConfig(req).then(({ code, data }) => {
     if (code === '0') {
       return compileNodeProject(req, data)
     } else {
-      return data
+      return { code }
     }
   })
+}
+
+// 获取版本信息
+function getVersion (req) {
+  return getProjectConfig(req).then(({ code, data }) => {
+    if (code === '0') {
+      return runCommand(data)
+    } else {
+      return { code }
+    }
+  })
+
+  function runCommand (config) {
+    const options = {
+      cwd: config.projectDir
+    }
+    return new Promise((resolve, reject) => {
+      childProcess.exec('git fetch origin', options, (error, stdout, stderr) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve()
+        }
+      })
+    }).then(() => {
+      const commit = childProcess.execSync('git show -s --format=%H', options).toString().trim()
+      const committer = childProcess.execSync('git show -s --format=%cn', options).toString().trim()
+      const originCommit = childProcess.execSync('git show -s --format=%H', options).toString().trim()
+      const originCommitter = childProcess.execSync('git show -s --format=%cn', options).toString().trim()
+      return {
+        code: '0',
+        data: {
+          current: {
+            commit,
+            committer
+          },
+          origin: {
+            commit: originCommit,
+            committer: originCommitter
+          }
+        }
+      }
+    })
+  }
 }
 
 // 编译node项目
@@ -117,7 +163,9 @@ function getProjectConfig (req) {
       return verified ? {
         data,
         code: '0'
-      } : { code: 'N_000007' }
+      } : {
+        code: 'N_000007'
+      }
     }
     return { code: 'N_000017' }
   })
@@ -209,6 +257,7 @@ function getModified (req, options) {
 }
 
 module.exports = {
+  getVersion,
   webProject,
   nodeProject
 }
