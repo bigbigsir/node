@@ -57,7 +57,7 @@ function getVersion (req) {
       cwd: config.projectDir
     }
     return new Promise((resolve, reject) => {
-      childProcess.exec('git fetch origin', options, (error, stdout, stderr) => {
+      childProcess.exec('git fetch origin', options, (error) => {
         if (error) {
           reject(error)
         } else {
@@ -104,8 +104,8 @@ function compileNodeProject (req, config) {
     return runCmd('sh', args, options, socketId).then(initLog => pullCodeLog + initLog)
   }).then(log => {
     crateVersionHtml()
-    runCmd('sh', [pm2Restart], undefined, socketId)
     socket && socket.disconnect(true)
+    setTimeout(() => runCmd('sh', [pm2Restart], undefined, socketId), 500)
     return {
       code: '0',
       data: log
