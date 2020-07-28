@@ -67,8 +67,8 @@ function getVersion (req) {
     }).then(() => {
       const commit = childProcess.execSync('git show -s --format=%H', options).toString().trim()
       const committer = childProcess.execSync('git show -s --format=%cn', options).toString().trim()
-      const originCommit = childProcess.execSync('git show -s --format=%H', options).toString().trim()
-      const originCommitter = childProcess.execSync('git show -s --format=%cn', options).toString().trim()
+      const originCommit = childProcess.execSync('git show origin/master -s --format=%H', options).toString().trim()
+      const originCommitter = childProcess.execSync('git show origin/master -s --format=%cn', options).toString().trim()
       return {
         code: '0',
         data: {
