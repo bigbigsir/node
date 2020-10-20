@@ -5,6 +5,8 @@ if [ "$1" = true ]; then
 fi
 
 if [ "$2" = true ]; then
+  echo "<======= nginx -t =======>"
+  nginx -t
   echo "<======= nginx -s reload =======>"
   nginx -s reload
 fi
