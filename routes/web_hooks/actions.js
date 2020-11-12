@@ -95,7 +95,6 @@ function compileNodeProject (req, config) {
   }
   const shellFile = path.resolve(config.shellPath)
   const pullCode = path.resolve('./shell/pull_code.sh')
-  const pm2Restart = path.resolve('./shell/pm2_restart.sh')
   return runCmd('sh', [pullCode], options, socketId).then(pullCodeLog => {
     const modified = getModified(req, options)
     const needNpmInstall = modified.includes('package.json')
@@ -103,6 +102,7 @@ function compileNodeProject (req, config) {
     const args = [shellFile, needNpmInstall, needReloadNginx]
     return runCmd('sh', args, options, socketId).then(initLog => pullCodeLog + initLog)
   }).then(log => {
+    const pm2Restart = path.resolve('./shell/pm2_restart.sh')
     crateVersionHtml()
     runCmd('sh', [pm2Restart], undefined, socketId)
     socket && socket.disconnect(true)
