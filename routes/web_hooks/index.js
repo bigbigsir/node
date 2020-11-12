@@ -1,26 +1,19 @@
 const { createRoute } = require('../route_util')
 const {
   getVersion,
-  webProject,
-  nodeProject
+  updateForGitHub
 } = require('./actions')
 
 const routes = [
   {
     method: 'post',
-    path: '/webProject/:key',
+    path: '/updateForGitHub/:key',
     loginAuth: false,
-    action: webProject
+    action: updateForGitHub
   },
   {
     method: 'post',
-    path: '/nodeProject/:key',
-    loginAuth: false,
-    action: nodeProject
-  },
-  {
-    method: 'post',
-    path: '/getVersion/:key',
+    path: '/getVersion',
     loginAuth: true,
     action: getVersion
   }

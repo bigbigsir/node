@@ -9,18 +9,6 @@ const socket = require('socket.io')
 
 const app = express()
 const port = process.env.PORT || 3000
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'ejs')
-
-app.use(logger)
-
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
-app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'public')))
-
 const server = app.listen(port, '0.0.0.0', () => {
   let iPAddress = ''
   for (const devName in interfaces) {
@@ -48,6 +36,17 @@ const io = socket(server, {
   }
 })
 module.exports.io = io
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
+
+app.use(logger)
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser())
+app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', require('./routes/index'))
 app.use('/users', require('./routes/users'))

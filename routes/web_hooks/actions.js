@@ -6,6 +6,7 @@ const moment = require('moment')
 const childProcess = require('child_process')
 const jwt = require('../../util/token')
 const Project = require('../../mongoose/project')
+const errorCode = require('../../config/error_code')
 const { io } = require(path.resolve('./app.js'))
 
 const nsp = io.of('/socket/webHooks')
@@ -18,33 +19,89 @@ nsp.use((socket, next) => {
   } else {
     next(new Error('Authentication error'))
   }
+}).on('connection', (socket) => {
+  socket.on('updateProject', params => {
+    updateForAdmin(params.id, socket.id)
+  })
 })
 
-// 前端项目
-function webProject (req) {
-  return getProjectConfig(req).then(({ code, data }) => {
+// 获取项目信息
+function updateForAdmin (projectId, socketId) {
+  const socket = nsp.sockets[socketId]
+  return getProjectConfig({ _id: projectId }).then(({ code, data }) => {
     if (code === '0') {
-      return compileWebProject(req, data)
+      compileProject(data, socketId).finally(() => {
+        socket && socket.disconnect(true)
+      })
     } else {
-      return { code }
+      socket && socket.emit('error', errorCode.N_000017.message)
     }
   })
 }
 
-// node项目
-function nodeProject (req) {
-  return getProjectConfig(req).then(({ code, data }) => {
-    if (code === '0') {
-      return compileNodeProject(req, data)
-    } else {
+// 编译项目
+function compileProject (config, socketId) {
+  const options = {
+    cwd: config.projectDir
+  }
+  const shellFile = path.resolve(config.shellPath)
+  const pullCode = path.resolve('./shell/pull_code.sh')
+  return runCmd('sh', [pullCode], options, socketId).then(() => {
+    const modified = getModified(options)
+    const needNpmInstall = modified.includes('package.json')
+    const needReloadNginx = modified.includes('nginx.conf')
+    const args = [shellFile, needNpmInstall, needReloadNginx]
+    return runCmd('sh', args, options, socketId)
+  }).then(() => {
+    if (config.type === 'Node') restartSocketPort()
+  })
+}
+
+// 重启Socket端口
+function restartSocketPort () {
+  const pm2Restart = path.resolve('./shell/pm2_restart.sh')
+  crateVersionHtml()
+  runCmd('sh', [pm2Restart])
+}
+
+// GitHub上master分支触发push事件调用该接口
+function updateForGitHub (req) {
+  const key = req.params.key
+  const body = req.body
+  const event = req.get('X-GitHub-Event')
+  if (body.ref === 'refs/heads/master' && event === 'push') {
+    return getProjectConfig({ key }).then(({ code, data }) => {
+      if (code === '0') {
+        if (verifySecret(req, data.secret)) {
+          compileProject(data)
+        } else {
+          return { code: 'N_000007' }
+        }
+      }
       return { code }
+    })
+  } else {
+    return { code: 'N_000007' }
+  }
+}
+
+// 获取项目配置，并校验GitHub的sign
+function getProjectConfig (query) {
+  return Project.findOne(query).then(data => {
+    if (data) {
+      return {
+        code: '0',
+        data
+      }
     }
+    return { code: 'N_000017' }
   })
 }
 
 // 获取版本信息
 function getVersion (req) {
-  return getProjectConfig(req).then(({ code, data }) => {
+  const { id } = req.body
+  return getProjectConfig({ _id: id }).then(({ code, data }) => {
     if (code === '0') {
       return runCommand(data)
     } else {
@@ -84,91 +141,6 @@ function getVersion (req) {
       }
     })
   }
-}
-
-// 编译node项目
-function compileNodeProject (req, config) {
-  const socketId = req.get('socket-id')
-  const socket = nsp.sockets[socketId]
-  const options = {
-    cwd: config.projectDir
-  }
-  const shellFile = path.resolve(config.shellPath)
-  const pullCode = path.resolve('./shell/pull_code.sh')
-  return runCmd('sh', [pullCode], options, socketId).then(pullCodeLog => {
-    const modified = getModified(req, options)
-    const needNpmInstall = modified.includes('package.json')
-    const needReloadNginx = modified.includes('nginx.conf')
-    const args = [shellFile, needNpmInstall, needReloadNginx]
-    return runCmd('sh', args, options, socketId).then(initLog => pullCodeLog + initLog)
-  }).then(log => {
-    const pm2Restart = path.resolve('./shell/pm2_restart.sh')
-    crateVersionHtml()
-    runCmd('sh', [pm2Restart], undefined, socketId)
-    socket && socket.disconnect(true)
-    return {
-      code: '0',
-      data: log
-    }
-  }).catch(error => {
-    socket && socket.disconnect(true)
-    return {
-      code: 'N_000008',
-      error: error.toString()
-    }
-  })
-}
-
-// 编译前端项目
-function compileWebProject (req, config) {
-  const socketId = req.get('socket-id')
-  const socket = nsp.sockets[socketId]
-  const options = {
-    cwd: config.projectDir
-  }
-  const shellFile = path.resolve(config.shellPath)
-  const pullCode = path.resolve('./shell/pull_code.sh')
-  return runCmd('sh', [pullCode], options, socketId).then(pullCodeLog => {
-    const modified = getModified(req, options)
-    const needNpmInstall = modified.includes('package.json')
-    const needReloadNginx = modified.includes('nginx.conf')
-    const args = [shellFile, needNpmInstall, needReloadNginx]
-    return runCmd('sh', args, options, socketId).then(initLog => pullCodeLog + initLog)
-  }).then(log => {
-    socket && socket.disconnect(true)
-    return {
-      code: '0',
-      data: log
-    }
-  }).catch(error => {
-    socket && socket.disconnect(true)
-    return {
-      code: 'N_000008',
-      error: error.toString()
-    }
-  })
-}
-
-// 获取项目配置，并校验GitHub的sign
-function getProjectConfig (req) {
-  const key = req.params.key
-  const body = req.body
-  const event = req.get('X-GitHub-Event')
-  const userAgent = req.get('User-Agent')
-  const isGitHub = /^GitHub-Hookshot/.test(userAgent)
-  return Project.findOne({ key }).then(data => {
-    if (data) {
-      const secret = data.secret
-      const verified = (!isGitHub || (body.ref === 'refs/heads/master' && event === 'push')) && verifySecret(req, secret)
-      return verified ? {
-        data,
-        code: '0'
-      } : {
-        code: 'N_000007'
-      }
-    }
-    return { code: 'N_000017' }
-  })
 }
 
 // 校验GitHub的sign
@@ -246,18 +218,12 @@ function runCmd (cmd, args, options, socketId) {
 }
 
 // 获取变更文件列表
-function getModified (req, options) {
-  const userAgent = req.get('User-Agent')
-  if (/^GitHub-Hookshot/.test(userAgent)) {
-    return req.body.head_commit.modified
-  } else {
-    const modified = childProcess.execSync('git diff --name-only HEAD~ HEAD', options)
-    return modified.toString().trim().split('\n')
-  }
+function getModified (options) {
+  const modified = childProcess.execSync('git diff --name-only HEAD~ HEAD', options)
+  return modified.toString().trim().split('\n')
 }
 
 module.exports = {
   getVersion,
-  webProject,
-  nodeProject
+  updateForGitHub
 }
