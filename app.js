@@ -47,7 +47,6 @@ const io = socket(server, {
     res.end()
   }
 })
-module.exports.server = server
 module.exports.io = io
 
 app.use('/', require('./routes/index'))
@@ -58,7 +57,7 @@ app.use('/email', require('./routes/email'))
 app.use('/project', require('./routes/project'))
 app.use('/common', require('./routes/common'))
 app.use('/webHooks', require('./routes/web_hooks'))
-require('./mongoose/test')
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404))
