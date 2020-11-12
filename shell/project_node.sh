@@ -12,4 +12,4 @@ if [ "$2" = true ]; then
 fi
 
 echo "<======= pm2 reload port3030 =======>"
-pm2 reload port3030
+pm2 restart port3030

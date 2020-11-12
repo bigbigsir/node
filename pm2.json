@@ -11,8 +11,7 @@
         "public",
         "node_modules"
       ],
-      "exec_mode": "cluster",
-      "instances": 2,
+      "exec_mode": "fork",
       "out_file": "./logs/port_3030/out.log",
       "error_file": "./logs/port_3030/error.log",
       "log_date_format": "YYYY-MM-DD HH:mm:ss",
