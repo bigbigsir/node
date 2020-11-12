@@ -36,7 +36,7 @@ function verifyAuth (req, res, next) {
   const token = req.get('token')
   const payload = jwt.verifyToken(token) || {}
   const signStr = qid + reverseString(JSON.stringify(req.body)) + token
-  const publicPath = '^/webHooks/'
+  const publicPath = '^/webHooks/|^/socket.io'
   const passTokenPath = ['^/common/getWebToken$', '^/webHooks/']
   const verifySign = new RegExp(publicPath).test(req.url) || md5Encrypt(signStr) === sign
   const verifyToken = new RegExp(passTokenPath.join('|')).test(req.path) || ip === payload.ip
