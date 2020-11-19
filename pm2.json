@@ -26,7 +26,7 @@
     {
       "cwd": "./",
       "name": "socket",
-      "script": "app.js",
+      "script": "socket.js",
       "merge_logs": true,
       "watch": false,
       "ignore_watch": [
