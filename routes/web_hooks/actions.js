@@ -4,64 +4,21 @@ const path = require('path')
 const crypto = require('crypto')
 const moment = require('moment')
 const childProcess = require('child_process')
-const jwt = require('../../util/token')
+// const jwt = require('../../util/token')
 const Project = require('../../mongoose/project')
 const errorCode = require('../../config/error_code')
-const { io } = require(path.resolve('./app.js'))
-
-const nsp = io.of('/socket/webHooks')
-
-nsp.use((socket, next) => {
-  const payload = jwt.verifyToken(socket.request.headers.token) || {}
-  const ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address
-  if (payload.ip === ip.split(',')[0]) {
-    next()
-  } else {
-    next(new Error('Authentication error'))
-  }
-}).on('connection', (socket) => {
-  socket.on('updateProject', params => {
-    updateForAdmin(params.id, socket.id)
-  })
-})
 
 // 获取项目信息
-function updateForAdmin (projectId, socketId) {
-  const socket = nsp.sockets[socketId]
+function updateForAdmin (projectId, socket) {
   return getProjectConfig({ _id: projectId }).then(({ code, data }) => {
     if (code === '0') {
-      compileProject(data, socketId).finally(() => {
+      compileProject(data, socket).finally(() => {
         socket && socket.disconnect(true)
       })
     } else {
       socket && socket.emit('error', errorCode.N_000017.message)
     }
   })
-}
-
-// 编译项目
-function compileProject (config, socketId) {
-  const options = {
-    cwd: config.projectDir
-  }
-  const shellFile = path.resolve(config.shellPath)
-  const pullCode = path.resolve('./shell/pull_code.sh')
-  return runCmd('sh', [pullCode], options, socketId).then(() => {
-    const modified = getModified(options)
-    const needNpmInstall = modified.includes('package.json')
-    const needReloadNginx = modified.includes('nginx.conf')
-    const args = [shellFile, needNpmInstall, needReloadNginx]
-    return runCmd('sh', args, options, socketId)
-  }).then(() => {
-    if (config.type === 'Node') restartSocketPort()
-  })
-}
-
-// 重启Socket端口
-function restartSocketPort () {
-  const pm2Restart = path.resolve('./shell/pm2_restart.sh')
-  crateVersionHtml()
-  runCmd('sh', [pm2Restart])
 }
 
 // GitHub上master分支触发push事件调用该接口
@@ -83,6 +40,31 @@ function updateForGitHub (req) {
   } else {
     return { code: 'N_000007' }
   }
+}
+
+// 编译项目
+function compileProject (config, socket) {
+  const options = {
+    cwd: config.projectDir
+  }
+  const shellFile = path.resolve(config.shellPath)
+  const pullCode = path.resolve('./shell/pull_code.sh')
+  return runCmd('sh', [pullCode], options, socket).then(() => {
+    const modified = getModified(options)
+    const needNpmInstall = modified.includes('package.json')
+    const needReloadNginx = modified.includes('nginx.conf')
+    const args = [shellFile, needNpmInstall, needReloadNginx]
+    return runCmd('sh', args, options, socket)
+  }).then(() => {
+    if (config.type === 'Node') restartSocketPort()
+  })
+}
+
+// 重启Socket端口
+function restartSocketPort () {
+  const pm2Restart = path.resolve('./shell/pm2_restart.sh')
+  crateVersionHtml()
+  runCmd('sh', [pm2Restart])
 }
 
 // 获取项目配置，并校验GitHub的sign
@@ -181,11 +163,10 @@ function crateVersionHtml () {
 }
 
 // 开启子进程执行终端命令
-function runCmd (cmd, args, options, socketId) {
+function runCmd (cmd, args, options, socket) {
   let log = ''
   const spawn = childProcess.spawn
   const child = spawn(cmd, args, options || {})
-  const socket = nsp.sockets[socketId]
 
   child.stdout.on('data', (data) => {
     data = data.toString()
@@ -225,5 +206,6 @@ function getModified (options) {
 
 module.exports = {
   getVersion,
-  updateForGitHub
+  updateForGitHub,
+  updateForAdmin
 }

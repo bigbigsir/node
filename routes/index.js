@@ -11,6 +11,7 @@ const {
 
 // 权限认证，验证接口sign、token
 router.use((req, res, next) => {
+  console.log(req)
   setHeader(req, res)
   if (req.method === 'OPTIONS') {
     res.sendStatus(200)

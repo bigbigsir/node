@@ -6,7 +6,7 @@ const { isPromise } = require('../util/util')
 /**
  * @description 生成中间件路由，统一数据返回格式
  * @param {Array} routes 路由配置
- * @return router
+ * @return Router
  * 返回前端数据格式：
  * {
  *   code：处理结果状态

@@ -1,2 +1,2 @@
-echo "<======= pm2 restart port3000 =======>"
-pm2 restart port3000
+echo "<======= pm2 restart socket =======>"
+pm2 restart socket
