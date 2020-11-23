@@ -8,7 +8,10 @@ function addRole (req) {
       code: '0',
       data
     }
-  })
+  }).catch((error) => ({
+    error,
+    code: 'N_000010'
+  }))
 }
 
 // 更新角色

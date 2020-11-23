@@ -58,6 +58,7 @@ function json ({ code, ...args }) {
     data: null,
     code: errorCode[code].code,
     message: errorCode[code].message,
+    success: String(code) === '0',
     ...args
   }
 }
