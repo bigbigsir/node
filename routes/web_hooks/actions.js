@@ -148,12 +148,12 @@ function crateVersionHtml () {
   const buildDate = moment().format(format)
 
   const version = {
-    project: project,
-    commit: commit,
-    committer: committer,
-    committerEmail: committerEmail,
-    commitDate: commitDate,
-    buildDate: buildDate
+    project,
+    commit,
+    committer,
+    committerEmail,
+    commitDate,
+    buildDate
   }
   ejs.renderFile(path.resolve('./views/version.ejs'), { version }, (err, str) => {
     const html = err ? `<pre>${err}</pre>` : str
