@@ -5,6 +5,7 @@ const createError = require('http-errors')
 const cookieParser = require('cookie-parser')
 const interfaces = require('os').networkInterfaces()
 const logger = require('./util/logger_custom')
+const { addLog } = require('./routes/log/actions')
 
 const app = express()
 const port = process.env.PORT || 3100
@@ -13,7 +14,14 @@ const port = process.env.PORT || 3100
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
-app.use(logger)
+app.use(logger('pm2', {
+  stream: {
+    write (log) {
+      addLog(log)
+      console.log(log)
+    }
+  }
+}))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
@@ -21,12 +29,13 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', require('./routes/index'))
-app.use('/users', require('./routes/users'))
-app.use('/menu', require('./routes/menu'))
+app.use('/log', require('./routes/log'))
 app.use('/role', require('./routes/role'))
+app.use('/menu', require('./routes/menu'))
+app.use('/users', require('./routes/users'))
 app.use('/email', require('./routes/email'))
-app.use('/project', require('./routes/project'))
 app.use('/common', require('./routes/common'))
+app.use('/project', require('./routes/project'))
 app.use('/webHooks', require('./routes/web_hooks'))
 
 // catch 404 and forward to error handler
