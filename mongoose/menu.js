@@ -19,13 +19,12 @@ const schema = new mongoose.Schema({
     trim: true
   },
   parent: {
-    type: mongoose.Schema.Types.ObjectId,
     ref: 'Menu',
-    default: null
+    type: mongoose.Schema.Types.ObjectId
   },
   children: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Menu'
+    ref: 'Menu',
+    type: mongoose.Schema.Types.ObjectId
   }]
 }, {
   versionKey: false,

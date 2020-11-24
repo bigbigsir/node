@@ -259,11 +259,12 @@ function addUser (req) {
 
 // 编辑用户
 function updateUser (req) {
-  const { id } = req.body
+  const { id, role } = req.body
   const ops = {
     new: true,
     runValidators: true
   }
+  req.body.role = role
   return User.findByIdAndUpdate(id, req.body, ops).then(data => {
     return {
       data,

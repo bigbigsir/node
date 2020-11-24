@@ -9,11 +9,11 @@ function getMenus (req) {
   }
   const select = '-created -updated'
   const { name, path, parent } = req.body
-  const filter = JSON.parse(JSON.stringify({
-    name,
-    path,
+  const filter = {
     parent
-  }))
+  }
+  name && (filter.name = name)
+  path && (filter.path = path)
   return Menu.find(filter, select, options).then(data => {
     return {
       code: '0',

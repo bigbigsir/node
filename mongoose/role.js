@@ -14,7 +14,11 @@ const schema = new mongoose.Schema({
   },
   menus: [{
     type: mongoose.Schema.Types.ObjectId
-  }]
+  }],
+  description: {
+    trim: true,
+    type: String
+  }
 }, {
   versionKey: false,
   toJSON: { virtuals: true },
