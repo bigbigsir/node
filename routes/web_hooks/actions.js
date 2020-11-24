@@ -56,15 +56,15 @@ function compileProject (config, socket) {
     const args = [shellFile, needNpmInstall, needReloadNginx]
     return runCmd('sh', args, options, socket)
   }).then(() => {
-    if (config.type === 'Node') restartSocketPort()
+    if (config.type === 'Node') restartSocketPort(options)
   })
 }
 
 // 重启Socket端口
-function restartSocketPort () {
+function restartSocketPort (options) {
   const pm2Restart = path.resolve('./shell/pm2_restart.sh')
   crateVersionHtml()
-  runCmd('sh', [pm2Restart])
+  runCmd('sh', [pm2Restart], options)
 }
 
 // 获取项目配置，并校验GitHub的sign
@@ -163,10 +163,10 @@ function crateVersionHtml () {
 }
 
 // 开启子进程执行终端命令
-function runCmd (cmd, args, options, socket) {
+function runCmd (cmd, args, options = {}, socket) {
   let log = ''
   const spawn = childProcess.spawn
-  const child = spawn(cmd, args, options || {})
+  const child = spawn(cmd, args, options)
 
   child.stdout.on('data', (data) => {
     data = data.toString()
