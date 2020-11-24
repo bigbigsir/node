@@ -54,16 +54,18 @@ function compileProject (config, socket) {
     const needNpmInstall = modified.includes('package.json')
     const needReloadNginx = modified.includes('nginx.conf')
     const args = [shellFile, needNpmInstall, needReloadNginx]
-    if (config.type === 'Node') restartSocketPort(options)
+    if (!socket && config.type === 'Node') restartSocketPort(options)
     return runCmd('sh', args, options, socket)
+  }).then(() => {
+    if (socket && config.type === 'Node') return restartSocketPort(options, socket)
   })
 }
 
 // 重启Socket端口
-function restartSocketPort (options) {
+function restartSocketPort (options, socket) {
   const pm2Restart = path.resolve('./shell/pm2_restart.sh')
   crateVersionHtml()
-  runCmd('sh', [pm2Restart], options)
+  return runCmd('sh', [pm2Restart], options, socket)
 }
 
 // 获取项目配置，并校验GitHub的sign
