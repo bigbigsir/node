@@ -152,7 +152,7 @@ function crateVersionHtml () {
     committer: committer,
     committerEmail: committerEmail,
     commitDate: commitDate,
-    pullDate: buildDate
+    buildDate: buildDate
   }
   ejs.renderFile(path.resolve('./views/version.ejs'), { version }, (err, str) => {
     const html = err ? `<pre>${err}</pre>` : str
