@@ -54,9 +54,8 @@ function compileProject (config, socket) {
     const needNpmInstall = modified.includes('package.json')
     const needReloadNginx = modified.includes('nginx.conf')
     const args = [shellFile, needNpmInstall, needReloadNginx]
-    return runCmd('sh', args, options, socket)
-  }).then(() => {
     if (config.type === 'Node') restartSocketPort(options)
+    return runCmd('sh', args, options, socket)
   })
 }
 
