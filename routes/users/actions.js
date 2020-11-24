@@ -5,38 +5,45 @@ const { privateDecrypt } = require('../../util/util')
 const { createWebToken, verifyCaptcha } = require('../common/actions')
 const { verifyEmailCode } = require('../email/actions')
 
+// 查找用户名或邮箱是否已注册
+function findUserIsExist (username, email) {
+  return User.findOne({ $or: [{ username }, { email }] }).then(user => {
+    if (!user) {
+      return { code: '0' }
+    } else if (user.username === username) {
+      return { code: 'N_000009' }
+    } else {
+      return { code: 'N_000012' }
+    }
+  })
+}
+
 // 注册，查找用户名是否注册=>保存新用户=>登录
 function signUp (req) {
+  const { email, username } = req.body
   return verifyEmailCode(req).then(({ code }) => {
     if (code === '0') {
-      return findUser(req)
+      return findUserIsExist(username, email).then(() => saveUser(req))
     } else {
       return { code }
     }
   })
 
-  function findUser (req) {
+  function saveUser (req) {
     const body = req.body
-    const { email, username, password } = body
+    const { username, password } = body
     body.password = privateDecrypt(password)
-    return User.findOne({ $or: [{ username }, { email }] }).then(user => {
-      if (!user) {
-        return new User(body).save().then(() => {
-          req.body = {
-            username,
-            password
-          }
-          return signIn(req)
-        }).catch((error) => ({
-          error,
-          code: 'N_000010'
-        }))
-      } else if (user.username === username) {
-        return { code: 'N_000009' }
-      } else {
-        return { code: 'N_000012' }
+    body.createMethod = 'register'
+    return new User(body).save().then(() => {
+      req.body = {
+        username,
+        password
       }
-    })
+      return signIn(req)
+    }).catch((error) => ({
+      error,
+      code: 'N_000010'
+    }))
   }
 }
 
@@ -53,12 +60,20 @@ function signIn (req) {
   }
 
   function findUser (req) {
-    let { username, password } = req.body
-    password = privateDecrypt(password)
-    return User.findOne({
-      username,
-      password
-    }).then(data => {
+    const { username, password } = req.body
+    const pwd = privateDecrypt(password)
+    const query = {
+      $or: [
+        {
+          username,
+          password: pwd
+        }, {
+          email: username,
+          password: pwd
+        }
+      ]
+    }
+    return User.findOne(query).then(data => {
       if (data) {
         return updateUser(data._id)
       } else {
@@ -217,25 +232,29 @@ function getUserList (req) {
 // 添加用户
 function addUser (req) {
   const body = req.body
-  const { email, username } = body
+  const { email, username, loginName } = body
+  body.creator = loginName
   body.password = '123456'
-  return User.findOne({ $or: [{ username }, { email }] }).then(user => {
-    if (!user) {
-      return new User(body).save().then(data => {
-        return {
-          data,
-          code: '0'
-        }
-      }).catch((error) => ({
-        error,
-        code: 'N_000010'
-      }))
-    } else if (user.username === username) {
-      return { code: 'N_000009' }
-    } else {
-      return { code: 'N_000012' }
+  body.createMethod = 'admin'
+
+  return findUserIsExist(username, email).then(({ code }) => {
+    if (code === '0') {
+      return saveUser(body)
     }
+    return { code }
   })
+
+  function saveUser (body) {
+    return new User(body).save().then(data => {
+      return {
+        data,
+        code: '0'
+      }
+    }).catch((error) => ({
+      error,
+      code: 'N_000010'
+    }))
+  }
 }
 
 // 编辑用户
