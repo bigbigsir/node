@@ -93,7 +93,7 @@ function signIn (req) {
       projection,
       lean: true
     })
-      .populate('role', 'name menus')
+      .populate('role')
       .then(findUserMenus)
       .then(trashTokens)
       .then(saveToken)
@@ -134,7 +134,8 @@ function findUserMenus (user) {
     }
   }
   const select = '-created -updated'
-  const menusId = user.role ? user.role.menus : []
+  const menus = user.role ? user.role.menus : []
+  delete user.role
   return Menu.find({ parent: null }, select, options).then(data => {
     user.menus = filter(data)
     return user
@@ -142,7 +143,7 @@ function findUserMenus (user) {
 
   function filter (data) {
     return data.filter(item => {
-      const isExist = menusId.some(value => String(value) === String(item.id))
+      const isExist = menus.some(value => String(value) === String(item.id))
       if (isExist) {
         item.children = filter(item.children)
       }
@@ -171,8 +172,9 @@ function getUserInfo (req) {
     _id: 0,
     password: 0
   }
+
   const username = req.body.loginName
-  return User.findOne({ username }, projection, { lean: true }).populate('role', 'name menus').then(user => {
+  return User.findOne({ username }, projection, { lean: true }).populate('role').then(user => {
     if (user) {
       return findUserMenus(user).then(data => ({
         data,

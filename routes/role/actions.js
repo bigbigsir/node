@@ -64,7 +64,7 @@ function getAllRole () {
   }))
 }
 
-// 添加角色
+// 删除角色
 function removeRole (req) {
   const { id } = req.body
   return Role.findByIdAndRemove(id).then(() => {

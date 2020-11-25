@@ -8,7 +8,10 @@ function addProject (req) {
       code: '0',
       data
     }
-  })
+  }).catch((error) => ({
+    error,
+    code: 'N_000010'
+  }))
 }
 
 // 更新项目
@@ -29,11 +32,16 @@ function updateProject (req) {
 // 获取项目列表
 function getProjectList (req) {
   let { page, pageSize } = req.body
+  const options = {
+    sort: {
+      sort: 1
+    }
+  }
   page = parseInt(page) || 1
   pageSize = parseInt(pageSize) || 10
   return Promise.all([
     Project.count(),
-    Project.find().skip((page - 1) * pageSize).limit(pageSize)
+    Project.find(undefined, undefined, options).skip((page - 1) * pageSize).limit(pageSize)
   ]).then(([count, data]) => {
     return {
       code: '0',
