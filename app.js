@@ -5,7 +5,6 @@ const createError = require('http-errors')
 const cookieParser = require('cookie-parser')
 const interfaces = require('os').networkInterfaces()
 const logger = require('./util/logger_custom')
-const { addLog } = require('./routes/log/actions')
 
 const app = express()
 const port = process.env.PORT || 3100
@@ -14,14 +13,7 @@ const port = process.env.PORT || 3100
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
-app.use(logger('pm2', {
-  stream: {
-    write (log) {
-      addLog(log)
-      console.log(log)
-    }
-  }
-}))
+app.use(logger)
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
