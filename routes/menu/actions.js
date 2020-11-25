@@ -41,6 +41,7 @@ function addMenu (req) {
   }))
 }
 
+// 更新菜单（待优化）
 function updateMenu (req) {
   const { id, ...rest } = req.body
   return Menu.findById(id).lean().then(data => {
