@@ -38,7 +38,25 @@ function getLogList (req) {
   })
 }
 
+// 删除日志
+function removeLog (req) {
+  const { id } = req.body
+  return Log.findByIdAndRemove(id).then(() => {
+    return { code: '0' }
+  })
+}
+
+// 批量删除日志
+function removeLogs (req) {
+  const { ids } = req.body
+  return Log.remove({ _id: { $in: ids } }).then(() => {
+    return { code: '0' }
+  })
+}
+
 module.exports = {
   addLog,
+  removeLog,
+  removeLogs,
   getLogList
 }

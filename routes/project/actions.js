@@ -11,7 +11,7 @@ function addProject (req) {
   })
 }
 
-// 更新角色
+// 更新项目
 function updateProject (req) {
   const { id } = req.body
   const ops = {
@@ -26,7 +26,7 @@ function updateProject (req) {
   })
 }
 
-// 获取角色列表
+// 获取项目列表
 function getProjectList (req) {
   let { page, pageSize } = req.body
   page = parseInt(page) || 1
@@ -48,7 +48,7 @@ function getProjectList (req) {
   })
 }
 
-// 获取所有角色
+// 获取所有项目
 function getProjects () {
   return Project.find().then(data => ({
     data,
@@ -56,7 +56,7 @@ function getProjects () {
   }))
 }
 
-// 添加角色
+// 删除项目
 function removeProject (req) {
   const { id } = req.body
   return Project.findByIdAndRemove(id).then(() => {

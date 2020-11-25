@@ -24,6 +24,10 @@ const schema = new mongoose.Schema({
     type: String,
     required: '{PATH} is required'
   },
+  sort: {
+    type: Number,
+    required: '{PATH} is required'
+  },
   secret: {
     trim: true,
     type: String,

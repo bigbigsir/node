@@ -9,7 +9,6 @@ const schema = new mongoose.Schema({
   },
   sort: {
     type: Number,
-    default: 1,
     required: '{PATH} is required'
   },
   menus: [{
