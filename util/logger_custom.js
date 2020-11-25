@@ -1,24 +1,19 @@
 const moment = require('moment')
 const morgan = require('morgan')
 const json = require('morgan-json')
+const { getClientIp } = require('./util')
 const { addLog } = require('../routes/log/actions')
 
-morgan.token('date', () => {
-  return moment().format('YYYY-MM-DD hh:mm:ss')
+morgan.token('ip', (req) => {
+  return getClientIp(req)
 })
 
 morgan.token('qid', (req) => {
   return req.get('qid')
 })
 
-morgan.token('query', (req) => {
-  const query = req.query
-  const queryStr = JSON.stringify(query)
-  if (Object.keys(query).length) {
-    return queryStr
-  } else {
-    return ''
-  }
+morgan.token('date', () => {
+  return moment().format('YYYY-MM-DD hh:mm:ss')
 })
 
 morgan.token('body', (req) => {
@@ -26,6 +21,16 @@ morgan.token('body', (req) => {
   const bodyStr = JSON.stringify(body)
   if (Object.keys(body).length) {
     return bodyStr
+  } else {
+    return ''
+  }
+})
+
+morgan.token('query', (req) => {
+  const query = req.query
+  const queryStr = JSON.stringify(query)
+  if (Object.keys(query).length) {
+    return queryStr
   } else {
     return ''
   }
@@ -58,7 +63,7 @@ const fmt = [
 
 const formatJson = json({
   date: ':date',
-  ip: ':remote-addr',
+  ip: ':ip',
   qid: ':qid',
   url: ':url',
   body: ':body',
