@@ -23,7 +23,10 @@ function signUp (req) {
   const { email, username } = req.body
   return verifyEmailCode(req).then(({ code }) => {
     if (code === '0') {
-      return findUserIsExist(username, email).then(() => saveUser(req))
+      return findUserIsExist(username, email).then(({ code }) => {
+        if (code === '0') return saveUser(req)
+        return { code }
+      })
     } else {
       return { code }
     }
@@ -40,10 +43,7 @@ function signUp (req) {
         password
       }
       return signIn(req)
-    }).catch((error) => ({
-      error,
-      code: 'N_000010'
-    }))
+    })
   }
 }
 
@@ -86,14 +86,14 @@ function signIn (req) {
     const update = { lastLoginDate: Date.now() }
     const projection = {
       _id: 0,
-      id: 0,
       password: 0
     }
     return User.findByIdAndUpdate(id, update, {
-      projection,
-      lean: true
+      new: true,
+      projection
     })
       .populate('role')
+      .lean()
       .then(findUserMenus)
       .then(trashTokens)
       .then(saveToken)
@@ -128,27 +128,41 @@ function signIn (req) {
 
 // 查找改用户角色下的菜单权限
 function findUserMenus (user) {
+  const select = {
+    created: 0,
+    updated: 0
+  }
   const options = {
     sort: {
       sort: 1
-    }
+    },
+    stopAuthPopulate: true
   }
-  const select = '-created -updated'
+
+  const auths = user.role ? user.role.auths : []
   const menus = user.role ? user.role.menus : []
+
   delete user.role
-  return Menu.find({ parent: null }, select, options).then(data => {
-    user.menus = filter(data)
+  return Menu.find({ parent: null }, select, options).lean().then(data => {
+    user.menus = filterMenus(data)
     return user
   })
 
-  function filter (data) {
-    return data.filter(item => {
-      const isExist = menus.some(value => String(value) === String(item.id))
-      if (isExist) {
-        item.children = filter(item.children)
+  function filterMenus (tree = []) {
+    return tree.filter(item => {
+      const menuIsExist = menus.some(id => String(id) === String(item._id))
+      if (menuIsExist) {
+        item.auths = filterAuths(item.auths)
+        item.children = filterMenus(item.children)
       }
-      return isExist
+      return menuIsExist
     })
+  }
+
+  function filterAuths (ids = []) {
+    return ids.length ? auths.filter(item => {
+      return ids.some(id => String(id) === String(item._id))
+    }) : []
   }
 }
 
@@ -247,27 +261,23 @@ function addUser (req) {
   })
 
   function saveUser (body) {
-    return new User(body).save().then(data => {
+    return new User(body).save().then(() => {
       return {
-        data,
         code: '0'
       }
-    }).catch((error) => ({
-      error,
-      code: 'N_000010'
-    }))
+    })
   }
 }
 
 // 编辑用户
 function updateUser (req) {
-  const { id, role } = req.body
+  const { id, role, ...rest } = req.body
   const ops = {
     new: true,
     runValidators: true
   }
-  req.body.role = role
-  return User.findByIdAndUpdate(id, req.body, ops).then(data => {
+  rest.role = role
+  return User.findByIdAndUpdate(id, rest, ops).then(data => {
     return {
       data,
       code: '0'
@@ -278,11 +288,8 @@ function updateUser (req) {
 // 删除用户
 function removeUser (req) {
   const { id } = req.body
-  return User.findByIdAndRemove(id).then(data => ({
+  return User.findByIdAndRemove(id).then(() => ({
     code: '0'
-  })).catch((error) => ({
-    error,
-    code: 'N_000010'
   }))
 }
 

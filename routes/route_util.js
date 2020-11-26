@@ -1,6 +1,6 @@
 const express = require('express')
 const errorCode = require('../config/error_code')
-const { verifyLoginAuth } = require('./users/actions')
+const { verifyLoginAuth } = require('./user/actions')
 const { isPromise } = require('../util/util')
 
 /**
@@ -20,8 +20,9 @@ function createRoute (routes = []) {
     router[item.method](item.path, verifyAuth(item.loginAuth), (req, res, next) => {
       const promise = item.action(req, res, next)
       isPromise(promise) && promise.then(data => {
-        res.locals = json(data) // 返回值记录到日志中
-        res.json(json(data))
+        data = json(data)
+        res.json(data)
+        res.locals = data // 返回值记录到日志中
       }).catch(e => {
         console.error(e)
         res.json(json({

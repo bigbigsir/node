@@ -1,6 +1,6 @@
 const mongoose = require('./connect')
 
-const schema = new mongoose.Schema({
+const schemaType = {
   role: {
     ref: 'Role',
     type: mongoose.Schema.Types.ObjectId
@@ -36,7 +36,8 @@ const schema = new mongoose.Schema({
     type: Date,
     default: Date.now
   } // 最后登录时间
-}, {
+}
+const schemaOptions = {
   versionKey: false,
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
@@ -44,6 +45,8 @@ const schema = new mongoose.Schema({
     createdAt: 'created',
     updatedAt: 'updated'
   }
-})
+}
+
+const schema = new mongoose.Schema(schemaType, schemaOptions)
 
 module.exports = mongoose.model('User', schema)

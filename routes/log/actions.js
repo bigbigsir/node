@@ -7,18 +7,15 @@ function addLog (log) {
 
 // 获取日志列表
 function getLogList (req) {
-  let { page, pageSize } = req.body
+  let { page, pageSize, ...filter } = req.body
   const options = {
     sort: {
       created: -1
     }
   }
-  const filter = { ...req.body }
   page = parseInt(page) || 1
   pageSize = parseInt(pageSize) || 10
 
-  delete filter.page
-  delete filter.pageSize
   delete filter.loginName
 
   return Promise.all([

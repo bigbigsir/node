@@ -1,19 +1,21 @@
 const Menu = require('../../mongoose/menu')
 
-// 注册，查找用户名是否注册=>保存新用户=>登录
+// 获取树形菜单数据
 function getMenus (req) {
+  const select = {
+    created: 0,
+    updated: 0,
+    auths: 0
+  }
   const options = {
     sort: {
       sort: 1
-    }
+    },
+    stopAuthPopulate: true
   }
-  const select = '-created -updated'
-  const { name, path, parent } = req.body
-  const filter = {
-    parent
-  }
-  name && (filter.name = name)
-  path && (filter.path = path)
+  const { parent, ...filter } = req.body
+  filter.parent = parent
+  delete filter.loginName
   return Menu.find(filter, select, options).then(data => {
     return {
       code: '0',
@@ -22,20 +24,48 @@ function getMenus (req) {
   })
 }
 
+// 获取树形菜单数据和权限
+function getMenusAndAuths () {
+  const filter = { parent: undefined }
+  const select = {
+    created: 0,
+    updated: 0
+  }
+  const options = {
+    sort: {
+      sort: 1
+    }
+  }
+
+  return Menu.find(filter, select, options).then(data => {
+    return {
+      code: '0',
+      data: recursion(JSON.parse(JSON.stringify(data)))
+    }
+
+    function recursion (menus) {
+      return menus.map(item => {
+        return {
+          ...item,
+          auths: undefined,
+          children: [...recursion(item.children), ...item.auths]
+        }
+      })
+    }
+  })
+}
+
+// 添加菜单
 function addMenu (req) {
   const body = req.body
   const menu = new Menu(body)
   return menu.save().then(data => {
+    const hasParent = data.parent
     const update = { $addToSet: { children: data._id } }
-    if (data.parent) {
-      return Menu.findByIdAndUpdate(data.parent, update).then(() => ({
-        code: '0'
-      }))
-    }
-    return {
-      code: '0'
-    }
-  }).catch((error) => ({
+    if (hasParent) return Menu.findByIdAndUpdate(data.parent, update)
+  }).then(() => ({
+    code: '0'
+  })).catch((error) => ({
     error,
     code: 'N_000010'
   }))
@@ -90,5 +120,6 @@ module.exports = {
   addMenu,
   getMenus,
   removeMenu,
-  updateMenu
+  updateMenu,
+  getMenusAndAuths
 }

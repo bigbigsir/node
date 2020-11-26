@@ -1,14 +1,14 @@
 const mongoose = require('./connect')
 
-const schema = new mongoose.Schema({
-  path: {
-    trim: true,
-    type: String
-  },
+const schemaType = {
   name: {
     type: String,
     trim: true,
     required: '{PATH} is required'
+  },
+  path: {
+    trim: true,
+    type: String
   },
   sort: {
     type: Number,
@@ -18,6 +18,14 @@ const schema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  show: {
+    type: Boolean,
+    required: '{PATH} is required'
+  },
+  auths: [{
+    ref: 'Auth',
+    type: mongoose.Schema.Types.ObjectId
+  }],
   parent: {
     ref: 'Menu',
     type: mongoose.Schema.Types.ObjectId
@@ -26,37 +34,54 @@ const schema = new mongoose.Schema({
     ref: 'Menu',
     type: mongoose.Schema.Types.ObjectId
   }]
-}, {
+}
+const schemaOptions = {
   versionKey: false,
   toJSON: { virtuals: true },
+  toObject: { virtuals: true },
   timestamps: {
     createdAt: 'created',
     updatedAt: 'updated'
   }
-})
+}
 
-schema.pre('find', function (next) {
-  this.populate({
-    path: 'children',
-    select: '-created -updated',
+const schema = new mongoose.Schema(schemaType, schemaOptions)
+
+schema.pre('find', find)
+schema.post('findOneAndRemove', findOneAndRemove)
+
+function find (next) {
+  const auth = {
+    path: 'auths',
+    select: 'id name type',
     options: {
       sort: {
         sort: 1
       }
     }
-  })
+  }
+  const options = this.options
+  const children = {
+    path: 'children',
+    select: this._fields,
+    options
+  }
+  const { stopAuthPopulate, stopChildrenPopulate } = options
+  if (!stopAuthPopulate) this.populate(auth)
+  if (!stopChildrenPopulate) this.populate(children)
   next()
-})
+}
 
-schema.post('findOneAndRemove', function (next) {
-  next && next.children.forEach(id => {
-    Menu.findByIdAndRemove(id).then(data => {
-      console.log('post findByIdAndRemove', data._id)
-    }).catch(e => {
-      console.log(e)
-    })
+function findOneAndRemove (next) {
+  const Auth = require('./auth')
+  Auth.remove({ _id: { $in: next.auth } }).catch(e => {
+    console.log('Menu schema.post findOneAndRemove error:\n' + e)
   })
-})
+  Menu.remove({ _id: { $in: next.children } }).catch(e => {
+    console.log('Menu schema.post findOneAndRemove error:\n' + e)
+  })
+}
 
 const Menu = mongoose.model('Menu', schema, 'menus')
+
 module.exports = Menu

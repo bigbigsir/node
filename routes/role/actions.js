@@ -29,13 +29,22 @@ function updateRole (req) {
   })
 }
 
+// 删除角色
+function removeRole (req) {
+  const { id } = req.body
+  return Role.findByIdAndRemove(id).then(() => {
+    return { code: '0' }
+  })
+}
+
 // 获取角色列表
 function getRoleList (req) {
   let { page, pageSize } = req.body
   const options = {
     sort: {
       sort: 1
-    }
+    },
+    stopAuthPopulate: true
   }
   page = parseInt(page) || 1
   pageSize = parseInt(pageSize) || 10
@@ -58,18 +67,16 @@ function getRoleList (req) {
 
 // 获取所有角色
 function getAllRole () {
-  return Role.find(undefined, 'id name').then(data => ({
+  const options = {
+    sort: {
+      sort: 1
+    },
+    stopAuthPopulate: true
+  }
+  return Role.find(undefined, 'id name', options).then(data => ({
     data,
     code: '0'
   }))
-}
-
-// 删除角色
-function removeRole (req) {
-  const { id } = req.body
-  return Role.findByIdAndRemove(id).then(() => {
-    return { code: '0' }
-  })
 }
 
 module.exports = {
