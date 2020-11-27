@@ -39,7 +39,7 @@ schema.pre('find', find)
 function find (next) {
   const auth = {
     path: 'auths',
-    select: '-created -updated',
+    select: 'id key name type',
     options: {
       sort: {
         sort: 1
