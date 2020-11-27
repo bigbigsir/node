@@ -46,14 +46,13 @@ const schemaOptions = {
 }
 
 const schema = new mongoose.Schema(schemaType, schemaOptions)
-
 schema.pre('find', find)
 schema.post('findOneAndRemove', findOneAndRemove)
 
 function find (next) {
   const auth = {
     path: 'auths',
-    select: 'id name type',
+    select: '-created -updated',
     options: {
       sort: {
         sort: 1

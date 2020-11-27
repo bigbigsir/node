@@ -39,7 +39,12 @@ schema.pre('find', find)
 function find (next) {
   const auth = {
     path: 'auths',
-    select: '-created -updated'
+    select: '-created -updated',
+    options: {
+      sort: {
+        sort: 1
+      }
+    }
   }
   const { stopAuthPopulate } = this.options
   if (!stopAuthPopulate) this.populate(auth)

@@ -85,20 +85,32 @@ function signIn (req) {
   function updateUser (id) {
     const update = { lastLoginDate: Date.now() }
     const projection = {
+      id: 0,
       _id: 0,
       password: 0
     }
-    return User.findByIdAndUpdate(id, update, {
+    const options = {
       new: true,
+      lean: true,
       projection
-    })
-      .populate('role')
-      .lean()
-      .then(findUserMenus)
+    }
+    const populateOptions = {
+      path: 'role',
+      options: {
+        stopAuthPopulate: true
+      }
+    }
+    return User.findByIdAndUpdate(id, update, options).populate(populateOptions)
       .then(trashTokens)
       .then(saveToken)
+      .then(findUserMenus)
+      .then(data => ({
+        data,
+        code: '0'
+      }))
   }
 
+  // 保存token
   function saveToken (user) {
     const appId = req.get('appId')
     const token = req.get('token')
@@ -108,12 +120,10 @@ function signIn (req) {
       token,
       username
     })
-    return instance.save().then(() => ({
-      code: '0',
-      data: user
-    }))
+    return instance.save().then(() => user)
   }
 
+  // 标记同应用同用户名的token为无效
   function trashTokens (user) {
     const appId = req.get('appId')
     const username = user.username
@@ -126,8 +136,10 @@ function signIn (req) {
   }
 }
 
-// 查找改用户角色下的菜单权限
+// 查找改用户角色下的菜单和权限
 function findUserMenus (user) {
+  const auths = user.role ? user.role.auths : []
+  const menus = user.role ? user.role.menus : []
   const select = {
     created: 0,
     updated: 0
@@ -135,15 +147,12 @@ function findUserMenus (user) {
   const options = {
     sort: {
       sort: 1
-    },
-    stopAuthPopulate: true
+    }
   }
 
-  const auths = user.role ? user.role.auths : []
-  const menus = user.role ? user.role.menus : []
-
   delete user.role
-  return Menu.find({ parent: null }, select, options).lean().then(data => {
+
+  return Menu.find({ parent: null }, select, options).then(data => {
     user.menus = filterMenus(data)
     return user
   })
@@ -152,17 +161,15 @@ function findUserMenus (user) {
     return tree.filter(item => {
       const menuIsExist = menus.some(id => String(id) === String(item._id))
       if (menuIsExist) {
-        item.auths = filterAuths(item.auths)
+        item.auths = filterAuths(item.auths, auths)
         item.children = filterMenus(item.children)
       }
       return menuIsExist
     })
   }
 
-  function filterAuths (ids = []) {
-    return ids.length ? auths.filter(item => {
-      return ids.some(id => String(id) === String(item._id))
-    }) : []
+  function filterAuths (auths = [], own = []) {
+    return auths.filter(item => own.some(id => String(id) === String(item._id)))
   }
 }
 
@@ -182,13 +189,20 @@ function signOut (req) {
 
 // 获取用户信息
 function getUserInfo (req) {
+  const username = req.body.loginName
   const projection = {
+    id: 0,
     _id: 0,
     password: 0
   }
+  const populateOptions = {
+    path: 'role',
+    options: {
+      stopAuthPopulate: true
+    }
+  }
 
-  const username = req.body.loginName
-  return User.findOne({ username }, projection, { lean: true }).populate('role').then(user => {
+  return User.findOne({ username }, projection, { lean: true }).populate(populateOptions).then(user => {
     if (user) {
       return findUserMenus(user).then(data => ({
         data,
@@ -261,7 +275,8 @@ function addUser (req) {
   })
 
   function saveUser (body) {
-    return new User(body).save().then(() => {
+    const user = new User(body)
+    return user.save().then(() => {
       return {
         code: '0'
       }
