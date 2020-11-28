@@ -67,15 +67,25 @@ function random (count = 6) {
 
 /**
  * @description 判断入参是否为Promise
- * @param {Promise} promise
+ * @param {*} target
  * @return {boolean}
  */
-function isPromise (promise) {
-  return promise && Object.prototype.toString.call(promise) === '[object Promise]'
+function isPromise (target) {
+  return Object.prototype.toString.call(target) === '[object Promise]'
+}
+
+/**
+ * @description 判断参数是否为对象
+ * @param  {*} target
+ * @return {boolean}
+ */
+function isObject(target) {
+  return Object.prototype.toString.call(target) === '[object Object]'
 }
 
 module.exports = {
   random,
+  isObject,
   isPromise,
   md5Encrypt,
   getClientIp,

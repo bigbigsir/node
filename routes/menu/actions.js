@@ -106,6 +106,7 @@ function updateMenu (req) {
   }))
 }
 
+// 删除菜单
 function removeMenu (req) {
   const { id } = req.body
   return Menu.findByIdAndRemove(id).then(data => ({

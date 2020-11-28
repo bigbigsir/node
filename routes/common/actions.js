@@ -2,12 +2,10 @@ const svgCaptcha = require('svg-captcha')
 const jwt = require('../../util/token')
 const Captcha = require('../../mongoose/captcha')
 
-const { getClientIp } = require('../../util/util')
-
 // 获取token
 function createWebToken (req) {
-  const ip = getClientIp(req)
-  const token = jwt.generateToken({ ip })
+  const appId = req.get('appId')
+  const token = jwt.generateToken({ appId })
   return Promise.resolve({
     code: '0',
     data: token

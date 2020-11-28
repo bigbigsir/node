@@ -1,7 +1,7 @@
 const express = require('express')
 const errorCode = require('../config/error_code')
-const { verifyLoginAuth } = require('./user/actions')
-const { isPromise } = require('../util/util')
+const user = require('./user/actions')
+const { isObject, isPromise } = require('../util/util')
 
 /**
  * @description 生成中间件路由，统一数据返回格式
@@ -17,44 +17,44 @@ const { isPromise } = require('../util/util')
 function createRoute (routes = []) {
   const router = express.Router()
   routes.forEach(item => {
-    router[item.method](item.path, verifyAuth(item.loginAuth), (req, res, next) => {
+    const fns = []
+    item.loginAuth && fns.push(verifyLoginAuth)
+    router[item.method](item.path, ...fns, (req, res, next) => {
       const promise = item.action(req, res, next)
-      isPromise(promise) && promise.then(data => {
-        data = json(data)
-        res.json(data)
-        res.locals = data // 返回值记录到日志中
-      }).catch(e => {
-        console.error(e)
-        res.json(json({
-          code: 'N_000001',
-          error: e
-        }))
-      })
+      isPromise(promise) && promise
+        .then(result => thenHandel(result, res))
+        .catch(error => catchHandel(error, res))
     })
   })
   return router
 }
 
-function verifyAuth (isVerify) {
-  return (req, res, next) => {
-    if (isVerify) {
-      verifyLoginAuth(req).then(({ code }) => {
-        if (code === '0') {
-          next()
-        } else {
-          res.json(json({ code }))
-        }
-      }).catch(e => {
-        console.log(e)
-        res.json(json({ code: 'N_000001' }))
-      })
-    } else {
-      next()
-    }
-  }
+// 验证登录权限
+function verifyLoginAuth (req, res, next) {
+  user.verifyLoginAuth(req).then(({ code }) => {
+    if (code === '0') return next()
+    thenHandel({ code }, res)
+  }).catch(e => catchHandel(e, res))
 }
 
-function json ({ code, ...args }) {
+function thenHandel (result, res) {
+  const data = formatJson(isObject(result) ? result : undefined)
+  res.json(data)
+  res.locals = data // 返回值记录到日志中
+  !isObject(result) && console.error('result must be an object and contain code \ncurrent result => ' + result)
+}
+
+function catchHandel (error, res) {
+  const data = formatJson({
+    code: 'N_000001',
+    error: error.message
+  })
+  res.json(data)
+  res.locals = data // 返回值记录到日志中
+  console.error(error)
+}
+
+function formatJson ({ code, ...args } = { code: 'N_000001' }) {
   return {
     data: null,
     code: errorCode[code].code,
@@ -65,6 +65,5 @@ function json ({ code, ...args }) {
 }
 
 module.exports = {
-  json,
   createRoute
 }

@@ -78,7 +78,7 @@ function getAuthList (req) {
   })
 }
 
-// 查找用户名或邮箱是否已注册
+// 查找权限的key是否存在
 function findKeyIsExist (menu, key) {
   const filter = {
     key,
