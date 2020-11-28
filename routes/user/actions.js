@@ -315,7 +315,7 @@ function updateUser (req) {
 }
 
 // 重置用户密码
-function restPassword (req) {
+function resetPassword (req) {
   const { id, password } = req.body
   const ops = {
     runValidators: true
@@ -352,6 +352,6 @@ module.exports = {
   updateUser,
   getUserInfo,
   getUserList,
-  restPassword,
+  resetPassword,
   verifyLoginAuth
 }
