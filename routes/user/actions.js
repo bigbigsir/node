@@ -250,9 +250,8 @@ function getUserList (req) {
   }
   const populateOptions = {
     path: 'role',
-    select: 'name -_id',
+    select: 'name',
     options: {
-      lean: true,
       stopAuthPopulate: true
     }
   }
@@ -306,11 +305,10 @@ function addUser (req) {
 
 // 编辑用户
 function updateUser (req) {
-  const { id, role, ...rest } = req.body
+  const { id, ...rest } = req.body
   const ops = {
     runValidators: true
   }
-  rest.role = role
   return User.findByIdAndUpdate(id, rest, ops).then(() => {
     return { code: '0' }
   })
