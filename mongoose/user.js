@@ -31,6 +31,10 @@ const schemaType = {
     trim: true,
     required: '{PATH} is required'
   }, // 密码
+  enable: {
+    type: Boolean,
+    default: true
+  }, // 是否启用
   createMethod: { type: String },
   lastLoginDate: { // 最近登录时间
     type: Date,

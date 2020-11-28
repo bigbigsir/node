@@ -7,7 +7,8 @@ const {
   removeUser,
   updateUser,
   getUserInfo,
-  getUserList
+  getUserList,
+  restPassword
 } = require('./actions')
 
 const routes = [
@@ -58,6 +59,12 @@ const routes = [
     path: '/getUserList',
     loginAuth: true,
     action: getUserList
+  },
+  {
+    method: 'post',
+    path: '/restPassword',
+    loginAuth: true,
+    action: restPassword
   }
 ]
 

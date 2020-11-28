@@ -75,7 +75,7 @@ function signIn (req) {
     }
     return User.findOne(query).then(data => {
       if (data) {
-        return updateUser(data._id)
+        return data.enable ? updateUser(data._id) : { code: 'N_000019' }
       } else {
         return { code: 'N_000002' }
       }
@@ -239,12 +239,33 @@ function verifyLoginAuth (req) {
 
 // 获取用户列表
 function getUserList (req) {
-  let { page, pageSize } = req.body
+  let { page, pageSize, username, ...filter } = req.body
+  const select = {
+    password: 0
+  }
+  const options = {
+    sort: {
+      created: 1
+    }
+  }
+  const populateOptions = {
+    path: 'role',
+    select: 'name -_id',
+    options: {
+      lean: true,
+      stopAuthPopulate: true
+    }
+  }
+
   page = parseInt(page) || 1
   pageSize = parseInt(pageSize) || 10
+
+  username && (filter.username = { $regex: username })
+  delete filter.loginName
+
   return Promise.all([
-    User.count(),
-    User.find().skip((page - 1) * pageSize).limit(pageSize).select('-password').populate('role', 'id name')
+    User.count(filter),
+    User.find(filter, select, options).skip((page - 1) * pageSize).limit(pageSize).populate(populateOptions)
   ]).then(([count, data]) => {
     return {
       code: '0',
@@ -264,7 +285,6 @@ function addUser (req) {
   const body = req.body
   const { email, username, loginName } = body
   body.creator = loginName
-  body.password = '123456'
   body.createMethod = 'admin'
 
   return findUserIsExist(username, email).then(({ code }) => {
@@ -288,16 +308,33 @@ function addUser (req) {
 function updateUser (req) {
   const { id, role, ...rest } = req.body
   const ops = {
-    new: true,
     runValidators: true
   }
   rest.role = role
-  return User.findByIdAndUpdate(id, rest, ops).then(data => {
-    return {
-      data,
-      code: '0'
-    }
+  return User.findByIdAndUpdate(id, rest, ops).then(() => {
+    return { code: '0' }
   })
+}
+
+// 重置用户密码
+function restPassword (req) {
+  const { id, password } = req.body
+  const ops = {
+    runValidators: true
+  }
+  return User.findByIdAndUpdate(id, { password }, ops).then(trashTokens).then(() => ({
+    code: '0'
+  }))
+
+  // 标记该用户名的token为无效
+  function trashTokens (user) {
+    const username = user.username
+    const filter = {
+      username,
+      valid: true
+    }
+    return Token.updateMany(filter, { valid: false })
+  }
 }
 
 // 删除用户
@@ -317,5 +354,6 @@ module.exports = {
   updateUser,
   getUserInfo,
   getUserList,
+  restPassword,
   verifyLoginAuth
 }
