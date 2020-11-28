@@ -23,12 +23,12 @@ const io = socket(server, {
 const nsp = io.of('/socket/webHooks')
 
 nsp.use((socket, next) => {
-  const payload = jwt.verifyToken(socket.request.headers.token) || {}
-  const ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address
-  if (payload.ip === ip.split(',')[0]) {
+  const { token, appId } = socket.request.headers
+  const payload = jwt.verifyToken(token) || {}
+  if (payload.appId === appId) {
     next()
   } else {
-    next(new Error('Authentication error'))
+    next(new Error('权限验证失败'))
   }
 }).on('connection', (socket) => {
   socket.on('updateProject', params => {
