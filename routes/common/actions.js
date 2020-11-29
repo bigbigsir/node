@@ -4,7 +4,7 @@ const Captcha = require('../../mongoose/captcha')
 
 // 获取token
 function createWebToken (req) {
-  const appId = req.get('appId')
+  const appId = req.get('app-id')
   const token = jwt.generateToken({ appId })
   return Promise.resolve({
     code: '0',

@@ -15,7 +15,7 @@ function setHeader (req, res) {
 function verifyAuth (req, res, next) {
   const qid = req.get('qid')
   const sign = req.get('sign')
-  const appId = req.get('appId')
+  const appId = req.get('app-id')
   const token = req.get('token')
   const payload = jwt.verifyToken(token) || {}
   const signStr = qid + reverseString(JSON.stringify(req.body)) + token
