@@ -1,7 +1,7 @@
 const User = require('../../mongoose/user')
 const Menu = require('../../mongoose/menu')
 const Token = require('../../mongoose/token')
-const { privateDecrypt } = require('../../util/util')
+const { privateDecrypt, formatSortJson } = require('../../util/util')
 const { createWebToken, verifyCaptcha } = require('../common/actions')
 const { verifyEmailCode } = require('../email/actions')
 
@@ -239,14 +239,12 @@ function verifyLoginAuth (req) {
 
 // 获取用户列表
 function getUserList (req) {
-  let { page, pageSize, username, ...filter } = req.body
+  let { sort, page, pageSize, username, ...filter } = req.body
   const select = {
     password: 0
   }
   const options = {
-    sort: {
-      created: 1
-    }
+    sort: formatSortJson(sort)
   }
   const populateOptions = {
     path: 'role',
@@ -269,11 +267,11 @@ function getUserList (req) {
     return {
       code: '0',
       data: {
-        page: page,
-        pageSize: pageSize,
+        page,
+        pageSize,
+        rows: data,
         total: count,
-        maxPage: Math.ceil(count / pageSize),
-        rows: data
+        maxPage: Math.ceil(count / pageSize)
       }
     }
   })

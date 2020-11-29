@@ -2,6 +2,11 @@ const fs = require('fs')
 const path = require('path')
 const crypto = require('crypto')
 
+const sortMap = {
+  ascend: 1,
+  descend: -1
+}
+
 /**
  * @description 解密RSA密文
  * @param {string} cipherText 密文
@@ -79,16 +84,35 @@ function isPromise (target) {
  * @param  {*} target
  * @return {boolean}
  */
-function isObject(target) {
+function isObject (target) {
   return Object.prototype.toString.call(target) === '[object Object]'
 }
 
+/**
+ * @description 将前端传递的排序数据格式化
+ * @param  {Object|undefined} sort
+ * @return {Object|undefined}
+ */
+function formatSortJson (sort) {
+  sort = isObject(sort) && Object.keys(sort).length ? sort : undefined
+  if (isObject(sort)) {
+    for (const key in sort) {
+      if (Object.hasOwnProperty.call(sort, key)) {
+        sort[key] = sortMap[sort[key]] || 1
+      }
+    }
+  }
+  return sort
+}
+
 module.exports = {
+  sortMap,
   random,
   isObject,
   isPromise,
   md5Encrypt,
   getClientIp,
   reverseString,
-  privateDecrypt
+  privateDecrypt,
+  formatSortJson
 }

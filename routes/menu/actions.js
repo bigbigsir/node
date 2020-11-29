@@ -1,4 +1,5 @@
 const Menu = require('../../mongoose/menu')
+const { formatSortJson } = require('../../util/util')
 
 // 获取树形菜单数据
 function getMenus (req) {
@@ -7,13 +8,11 @@ function getMenus (req) {
     updated: 0,
     auths: 0
   }
+  const { sort, parent, ...filter } = req.body
   const options = {
-    sort: {
-      sort: 1
-    },
+    sort: formatSortJson(sort),
     stopAuthPopulate: true
   }
-  const { parent, ...filter } = req.body
   filter.parent = parent
   delete filter.loginName
   return Menu.find(filter, select, options).then(data => {

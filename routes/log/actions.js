@@ -1,4 +1,5 @@
 const Log = require('../../mongoose/log')
+const { formatSortJson } = require('../../util/util')
 
 // 添加日志
 function addLog (log) {
@@ -7,11 +8,13 @@ function addLog (log) {
 
 // 获取日志列表
 function getLogList (req) {
-  let { page, pageSize, ...filter } = req.body
+  const select = {
+    created: 0,
+    updated: 0
+  }
+  let { sort, page, pageSize, ...filter } = req.body
   const options = {
-    sort: {
-      created: -1
-    }
+    sort: formatSortJson(sort)
   }
   page = parseInt(page) || 1
   pageSize = parseInt(pageSize) || 10
@@ -20,16 +23,16 @@ function getLogList (req) {
 
   return Promise.all([
     Log.count(filter),
-    Log.find(filter, undefined, options).skip((page - 1) * pageSize).limit(pageSize)
+    Log.find(filter, select, options).skip((page - 1) * pageSize).limit(pageSize)
   ]).then(([count, data]) => {
     return {
       code: '0',
       data: {
-        page: page,
-        pageSize: pageSize,
+        page,
+        pageSize,
+        rows: data,
         total: count,
-        maxPage: Math.ceil(count / pageSize),
-        rows: data
+        maxPage: Math.ceil(count / pageSize)
       }
     }
   })

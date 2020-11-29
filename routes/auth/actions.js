@@ -1,4 +1,5 @@
 const Auth = require('../../mongoose/auth')
+const { formatSortJson } = require('../../util/util')
 
 // 添加权限
 function addAuth (req) {
@@ -39,11 +40,9 @@ function removeAuth (req) {
 
 // 获取权限列表
 function getAuthList (req) {
-  let { page, pageSize, ...filter } = req.body
+  let { sort, page, pageSize, ...filter } = req.body
   const options = {
-    sort: {
-      sort: 1
-    }
+    sort: formatSortJson(sort)
   }
   const populateOptions = {
     path: 'menu',
@@ -68,11 +67,11 @@ function getAuthList (req) {
     return {
       code: '0',
       data: {
-        page: page,
-        pageSize: pageSize,
+        page,
+        pageSize,
+        rows: data,
         total: count,
-        maxPage: Math.ceil(count / pageSize),
-        rows: data
+        maxPage: Math.ceil(count / pageSize)
       }
     }
   })

@@ -1,17 +1,17 @@
 const mongoose = require('./connect')
 
 const schema = new mongoose.Schema({
-  date: String,
   ip: String,
   qid: String,
   url: String,
   body: String,
   query: String,
   method: String,
-  status: String,
+  status: Number,
   response: String,
-  responseTime: String,
-  contentLength: String,
+  timestamp: Date,
+  responseTime: Number,
+  contentLength: Number,
   exp: { // 设置TTL, 10日后自动删除
     type: Date,
     default: Date.now,
@@ -21,7 +21,8 @@ const schema = new mongoose.Schema({
   toJSON: { virtuals: true },
   versionKey: false,
   timestamps: {
-    createdAt: 'created'
+    createdAt: 'created',
+    updatedAt: 'updated'
   }
 })
 

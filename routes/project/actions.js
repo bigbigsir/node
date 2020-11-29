@@ -1,4 +1,5 @@
 const Project = require('../../mongoose/project')
+const { formatSortJson } = require('../../util/util')
 
 // 添加项目
 function addProject (req) {
@@ -31,11 +32,9 @@ function updateProject (req) {
 
 // 获取项目列表
 function getProjectList (req) {
-  let { page, pageSize } = req.body
+  let { sort, page, pageSize } = req.body
   const options = {
-    sort: {
-      sort: 1
-    }
+    sort: formatSortJson(sort)
   }
   page = parseInt(page) || 1
   pageSize = parseInt(pageSize) || 10
@@ -46,11 +45,11 @@ function getProjectList (req) {
     return {
       code: '0',
       data: {
-        page: page,
-        pageSize: pageSize,
+        page,
+        pageSize,
+        rows: data,
         total: count,
-        maxPage: Math.ceil(count / pageSize),
-        rows: data
+        maxPage: Math.ceil(count / pageSize)
       }
     }
   })

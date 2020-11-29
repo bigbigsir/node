@@ -16,6 +16,10 @@ morgan.token('date', () => {
   return moment().format('YYYY-MM-DD hh:mm:ss')
 })
 
+morgan.token('timestamp', () => {
+  return Date.now()
+})
+
 morgan.token('body', (req) => {
   const body = req.body
   const bodyStr = JSON.stringify(body)
@@ -38,7 +42,6 @@ morgan.token('query', (req) => {
 
 morgan.token('response', (req, res) => {
   const response = res.locals
-  // response.data = Object.prototype.toString.call(response.data)
   const responseStr = JSON.stringify(response)
   if (Object.keys(response).length) {
     return responseStr
@@ -62,7 +65,6 @@ const fmt = [
 ]
 
 const formatJson = json({
-  date: ':date',
   ip: ':ip',
   qid: ':qid',
   url: ':url',
@@ -71,11 +73,12 @@ const formatJson = json({
   method: ':method',
   status: ':status',
   response: ':response',
+  timestamp: ':timestamp',
   responseTime: ':response-time',
   contentLength: ':res[content-length]'
 })
 
-morgan.format('pm2', fmt.join(':date'))
+morgan.format('pm2', fmt.join(''))
 
 const logger = morgan(formatJson, {
   skip (req) {

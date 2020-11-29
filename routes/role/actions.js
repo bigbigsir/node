@@ -1,4 +1,5 @@
 const Role = require('../../mongoose/role')
+const { formatSortJson } = require('../../util/util')
 
 // 添加角色
 function addRole (req) {
@@ -39,11 +40,9 @@ function removeRole (req) {
 
 // 获取角色列表
 function getRoleList (req) {
-  let { page, pageSize } = req.body
+  let { sort, page, pageSize } = req.body
   const options = {
-    sort: {
-      sort: 1
-    },
+    sort: formatSortJson(sort),
     stopAuthPopulate: true
   }
   page = parseInt(page) || 1
@@ -55,11 +54,11 @@ function getRoleList (req) {
     return {
       code: '0',
       data: {
-        page: page,
-        pageSize: pageSize,
+        page,
+        pageSize,
+        rows: data,
         total: count,
-        maxPage: Math.ceil(count / pageSize),
-        rows: data
+        maxPage: Math.ceil(count / pageSize)
       }
     }
   })
