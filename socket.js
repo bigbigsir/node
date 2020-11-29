@@ -25,7 +25,6 @@ const nsp = io.of('/socket/webHooks')
 nsp.use((socket, next) => {
   const { token, appid } = socket.request.headers
   const payload = jwt.verifyToken(token) || {}
-
   if (payload.appId === appid) {
     next()
   } else {
