@@ -11,7 +11,7 @@ const server = app.listen(port, '0.0.0.0', () => {
 const io = socket(server, {
   handlePreflightRequest (req, res) {
     const headers = {
-      'Access-Control-Allow-Headers': 'token',
+      'Access-Control-Allow-Headers': 'token,appId',
       // or the specific Origin you want to give access to
       'Access-Control-Allow-Origin': req.headers.origin,
       'Access-Control-Allow-Credentials': true
@@ -23,9 +23,10 @@ const io = socket(server, {
 const nsp = io.of('/socket/webHooks')
 
 nsp.use((socket, next) => {
-  const { token, appId } = socket.request.headers
+  const { token, appid } = socket.request.headers
   const payload = jwt.verifyToken(token) || {}
-  if (payload.appId === appId) {
+
+  if (payload.appId === appid) {
     next()
   } else {
     next(new Error('权限验证失败'))
