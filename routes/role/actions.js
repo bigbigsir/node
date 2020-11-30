@@ -40,16 +40,21 @@ function removeRole (req) {
 
 // 获取角色列表
 function getRoleList (req) {
-  let { sort, page, pageSize } = req.body
+  let { sort, page, pageSize, name, ...filter } = req.body
   const options = {
     sort: formatSortJson(sort),
     stopAuthPopulate: true
   }
+
   page = parseInt(page) || 1
   pageSize = parseInt(pageSize) || 10
+
+  name && (filter.name = { $regex: name })
+  delete filter.loginName
+
   return Promise.all([
-    Role.count(),
-    Role.find(undefined, undefined, options).skip((page - 1) * pageSize).limit(pageSize)
+    Role.count(filter),
+    Role.find(filter, undefined, options).skip((page - 1) * pageSize).limit(pageSize)
   ]).then(([count, data]) => {
     return {
       code: '0',

@@ -32,15 +32,20 @@ function updateProject (req) {
 
 // 获取项目列表
 function getProjectList (req) {
-  let { sort, page, pageSize } = req.body
+  let { sort, page, pageSize, name, ...filter } = req.body
   const options = {
     sort: formatSortJson(sort)
   }
+
   page = parseInt(page) || 1
   pageSize = parseInt(pageSize) || 10
+
+  name && (filter.name = { $regex: name })
+  delete filter.loginName
+
   return Promise.all([
-    Project.count(),
-    Project.find(undefined, undefined, options).skip((page - 1) * pageSize).limit(pageSize)
+    Project.count(filter),
+    Project.find(filter, undefined, options).skip((page - 1) * pageSize).limit(pageSize)
   ]).then(([count, data]) => {
     return {
       code: '0',
