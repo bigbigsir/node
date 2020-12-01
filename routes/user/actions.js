@@ -136,6 +136,38 @@ function signIn (req) {
   }
 }
 
+// 修改密码
+function updatePassword (req) {
+  let { loginName, password, newPassword } = req.body
+  password = privateDecrypt(password)
+  newPassword = privateDecrypt(newPassword)
+  const query = {
+    username: loginName,
+    password
+  }
+  const update = {
+    password: newPassword
+  }
+
+  return User.findOne(query).then(user => {
+    if (user) {
+      return User.findByIdAndUpdate(user._id, update).then(trashTokens)
+    } else {
+      return { code: 'N_000002' }
+    }
+  })
+
+  // 标记该用户名的token为无效
+  function trashTokens (user) {
+    const username = user.username
+    const filter = {
+      username,
+      valid: true
+    }
+    return Token.updateMany(filter, { valid: false }).then(() => ({ code: '0' }))
+  }
+}
+
 // 查找改用户角色下的菜单和权限
 function findUserMenus (user) {
   const auths = user.role ? user.role.auths : []
@@ -318,9 +350,7 @@ function resetPassword (req) {
   const ops = {
     runValidators: true
   }
-  return User.findByIdAndUpdate(id, { password }, ops).then(trashTokens).then(() => ({
-    code: '0'
-  }))
+  return User.findByIdAndUpdate(id, { password }, ops).then(trashTokens)
 
   // 标记该用户名的token为无效
   function trashTokens (user) {
@@ -329,7 +359,7 @@ function resetPassword (req) {
       username,
       valid: true
     }
-    return Token.updateMany(filter, { valid: false })
+    return Token.updateMany(filter, { valid: false }).then(() => ({ code: '0' }))
   }
 }
 
@@ -351,5 +381,6 @@ module.exports = {
   getUserInfo,
   getUserList,
   resetPassword,
-  verifyLoginAuth
+  verifyLoginAuth,
+  updatePassword
 }

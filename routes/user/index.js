@@ -8,7 +8,8 @@ const {
   updateUser,
   getUserInfo,
   getUserList,
-  resetPassword
+  resetPassword,
+  updatePassword
 } = require('./actions')
 
 const routes = [
@@ -65,6 +66,12 @@ const routes = [
     path: '/resetPassword',
     loginAuth: true,
     action: resetPassword
+  },
+  {
+    method: 'post',
+    path: '/updatePassword',
+    loginAuth: true,
+    action: updatePassword
   }
 ]
 
