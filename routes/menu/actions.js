@@ -75,8 +75,11 @@ function addMenu (req) {
 // 更新菜单
 function updateMenu (req) {
   const { id, path, parent, ...update } = req.body
-  path && (update.path = path)
-  parent && (update.parent = parent)
+  const $unset = {}
+
+  path ? (update.path = path) : ($unset.path = '')
+  parent ? (update.parent = parent) : ($unset.parent = '')
+  update.$unset = $unset
 
   return Menu.findById(id).then(updateMenu).then(updateParent).then(() => ({
     code: '0'
