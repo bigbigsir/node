@@ -15,6 +15,7 @@ function getMenus (req) {
   }
   filter.parent = parent
   delete filter.loginName
+
   return Menu.find(filter, select, options).then(data => {
     return {
       code: '0',
@@ -54,9 +55,10 @@ function getMenusAndAuths () {
   })
 }
 
-// 添加菜单
+// 添加菜单(path不能为空字符串添加进数据库)
 function addMenu (req) {
-  const body = req.body
+  const { path, ...body } = req.body
+  path && (body.path = path)
   const menu = new Menu(body)
   return menu.save().then(data => {
     const hasParent = data.parent
@@ -72,8 +74,11 @@ function addMenu (req) {
 
 // 更新菜单
 function updateMenu (req) {
-  const { id, ...rest } = req.body
-  return Menu.findById(id).lean().then(updateMenu).then(updateParent).then(() => ({
+  const { id, path, parent, ...update } = req.body
+  path && (update.path = path)
+  parent && (update.parent = parent)
+
+  return Menu.findById(id).then(updateMenu).then(updateParent).then(() => ({
     code: '0'
   })).catch((error) => ({
     error,
@@ -86,7 +91,7 @@ function updateMenu (req) {
       runValidators: true
     }
     if (menu) {
-      return Menu.findByIdAndUpdate(menu._id, rest, options).then(newMenu => ({
+      return Menu.findByIdAndUpdate(menu._id, update, options).then(newMenu => ({
         old: menu,
         fresh: newMenu
       }))

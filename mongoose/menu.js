@@ -7,9 +7,10 @@ const schemaType = {
     required: '{PATH} is required'
   },
   path: {
+    type: String,
     trim: true,
     unique: true,
-    type: String
+    sparse: true
   },
   sort: {
     type: Number,
