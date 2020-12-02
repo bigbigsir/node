@@ -120,6 +120,15 @@ function updateMenu (req) {
   }
 }
 
+// 更新菜单显示状态
+function updateMenuStatus (req) {
+  const { id, show } = req.body
+  const update = { show: !!show }
+  return Menu.findByIdAndUpdate(id, update).then(() => ({
+    code: '0'
+  }))
+}
+
 // 删除菜单
 function removeMenu (req) {
   const { id } = req.body
@@ -136,5 +145,6 @@ module.exports = {
   getMenus,
   removeMenu,
   updateMenu,
-  getMenusAndAuths
+  getMenusAndAuths,
+  updateMenuStatus
 }

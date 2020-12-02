@@ -4,7 +4,8 @@ const {
   getMenus,
   removeMenu,
   updateMenu,
-  getMenusAndAuths
+  getMenusAndAuths,
+  updateMenuStatus
 } = require('./actions')
 
 const routes = [
@@ -33,6 +34,11 @@ const routes = [
     path: '/getMenusAndAuths',
     loginAuth: true,
     action: getMenusAndAuths
+  }, {
+    method: 'post',
+    path: '/updateMenuStatus',
+    loginAuth: true,
+    action: updateMenuStatus
   }
 ]
 
