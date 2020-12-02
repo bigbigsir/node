@@ -70,39 +70,46 @@ function addMenu (req) {
   }))
 }
 
-// 更新菜单（待优化）
+// 更新菜单
 function updateMenu (req) {
   const { id, ...rest } = req.body
-  return Menu.findById(id).lean().then(data => {
-    if (data) {
-      return Menu.findByIdAndUpdate(id, rest, { new: true }).then(newData => ({
-        o: data,
-        n: newData
-      }))
-    }
-    throw new Error('N_000010')
-  }).then(({ o, n }) => {
-    const removeChildren = { $pull: { children: n._id } }
-    const addChildren = { $addToSet: { children: n._id } }
-    if (String(o.parent) !== String(n.parent)) {
-      if (o.parent && n.parent) {
-        return Promise.all([
-          Menu.findByIdAndUpdate(n.parent, addChildren),
-          Menu.findByIdAndUpdate(o.parent, removeChildren)
-        ])
-      } else if (o.parent) {
-        return Menu.findByIdAndUpdate(o.parent, removeChildren)
-      } else if (n.parent) {
-        return Menu.findByIdAndUpdate(n.parent, addChildren)
-      }
-    }
-    return { code: '0' }
-  }).then(() => ({
+  return Menu.findById(id).lean().then(updateMenu).then(updateParent).then(() => ({
     code: '0'
   })).catch((error) => ({
     error,
     code: 'N_000010'
   }))
+
+  function updateMenu (menu) {
+    const options = {
+      new: true,
+      runValidators: true
+    }
+    if (menu) {
+      return Menu.findByIdAndUpdate(menu._id, rest, options).then(newMenu => ({
+        old: menu,
+        fresh: newMenu
+      }))
+    }
+    return Promise.reject(new Error('菜单ID不存在'))
+  }
+
+  function updateParent ({ old, fresh }) {
+    const addChildren = { $addToSet: { children: fresh._id } }
+    const removeChildren = { $pull: { children: fresh._id } }
+    if (String(old.parent) !== String(fresh.parent)) {
+      if (old.parent && fresh.parent) {
+        return Promise.all([
+          Menu.findByIdAndUpdate(fresh.parent, addChildren),
+          Menu.findByIdAndUpdate(old.parent, removeChildren)
+        ])
+      } else if (fresh.parent) {
+        return Menu.findByIdAndUpdate(fresh.parent, addChildren)
+      } else if (old.parent) {
+        return Menu.findByIdAndUpdate(old.parent, removeChildren)
+      }
+    }
+  }
 }
 
 // 删除菜单
