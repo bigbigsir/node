@@ -8,6 +8,7 @@ const schemaType = {
   },
   path: {
     trim: true,
+    unique: true,
     type: String
   },
   sort: {
