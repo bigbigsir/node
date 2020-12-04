@@ -64,11 +64,12 @@ function catchHandel (error) {
 }
 
 function formatJson ({ code, ...args }, language, res) {
+  code = String(code) === '0' ? 'N_000000' : code
   const data = {
     data: null,
     code: errorCode[code].code,
     message: errorCode[code].message,
-    success: String(code) === '0',
+    success: String(code) === 'N_000000',
     ...args
   }
   getMessage(code).then(message => {
