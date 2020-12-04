@@ -29,6 +29,7 @@ app.use('/auth', require('./routes/auth'))
 app.use('/email', require('./routes/email'))
 app.use('/common', require('./routes/common'))
 app.use('/project', require('./routes/project'))
+app.use('/message', require('./routes/message'))
 app.use('/webHooks', require('./routes/web_hooks'))
 
 // catch 404 and forward to error handler

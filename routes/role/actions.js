@@ -22,11 +22,8 @@ function updateRole (req) {
     new: true,
     runValidators: true
   }
-  return Role.findByIdAndUpdate(id, req.body, ops).then(data => {
-    return {
-      data,
-      code: '0'
-    }
+  return Role.findByIdAndUpdate(id, req.body, ops).then(() => {
+    return { code: '0' }
   })
 }
 

@@ -1,6 +1,7 @@
 const express = require('express')
 const errorCode = require('../config/error_code')
 const user = require('./user/actions')
+const { getMessage } = require('./message/actions')
 const { isObject, isPromise } = require('../util/util')
 
 /**
@@ -21,9 +22,12 @@ function createRoute (routes = []) {
     item.loginAuth && fns.push(verifyLoginAuth)
     router[item.method](item.path, ...fns, (req, res, next) => {
       const promise = item.action(req, res, next)
+      const language = (req.get('language') || '').replace('-', '')
+
       isPromise(promise) && promise
         .then(result => thenHandel(result, res))
         .catch(error => catchHandel(error, res))
+        .then(data => formatJson(data, language, res))
     })
   })
   return router
@@ -37,31 +41,44 @@ function verifyLoginAuth (req, res, next) {
   }).catch(e => catchHandel(e, res))
 }
 
-function thenHandel (result, res) {
-  const data = formatJson(isObject(result) ? result : undefined)
-  res.json(data)
-  res.locals = data // 返回值记录到日志中
-  !isObject(result) && console.error('result must be an object and contain code \ncurrent result => ' + result)
+// 业务逻辑处理成功
+function thenHandel (result) {
+  if (isObject(result) && result.code) {
+    return result
+  } else {
+    console.error('result must be an object and contain code \ncurrent result => ' + result)
+    return {
+      code: 'N_000001',
+      error: 'result must be an object and contain code'
+    }
+  }
 }
 
-function catchHandel (error, res) {
-  const data = formatJson({
+// 业务逻辑处理报错
+function catchHandel (error) {
+  console.error(error)
+  return {
     code: 'N_000001',
     error: error.message
-  })
-  res.json(data)
-  res.locals = data // 返回值记录到日志中
-  console.error(error)
+  }
 }
 
-function formatJson ({ code, ...args } = { code: 'N_000001' }) {
-  return {
+function formatJson ({ code, ...args }, language, res) {
+  const data = {
     data: null,
     code: errorCode[code].code,
     message: errorCode[code].message,
     success: String(code) === '0',
     ...args
   }
+  getMessage(code).then(message => {
+    if (message && message[language]) data.message = message[language]
+  }).catch((e) => {
+    console.error('获取提示语失败：', e)
+  }).finally(() => {
+    res.json(data)
+    res.locals = data // 返回值记录到日志中
+  })
 }
 
 module.exports = {
