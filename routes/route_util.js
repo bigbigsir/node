@@ -22,7 +22,7 @@ function createRoute (routes = []) {
     item.loginAuth && fns.push(verifyLoginAuth)
     router[item.method](item.path, ...fns, (req, res, next) => {
       const promise = item.action(req, res, next)
-      const language = (req.get('language') || '').replace('-', '')
+      const language = String(req.get('language'))
 
       isPromise(promise) && promise
         .then(result => thenHandel(result, res))
