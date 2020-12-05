@@ -3,7 +3,9 @@ const { formatSortJson } = require('../../util/util')
 
 // 添加日志
 function addLog (log) {
-  new Log(log).save()
+  new Log(log).save().catch(e => {
+    console.error('记录日志错误：\n', e)
+  })
 }
 
 // 获取日志列表

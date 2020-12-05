@@ -25,8 +25,8 @@ function createRoute (routes = []) {
       const language = String(req.get('language'))
 
       isPromise(promise) && promise
-        .then(result => thenHandel(result, res))
-        .catch(error => catchHandel(error, res))
+        .then(result => thenHandel(result))
+        .catch(error => catchHandel(error))
         .then(data => formatJson(data, language, res))
     })
   })
@@ -35,10 +35,15 @@ function createRoute (routes = []) {
 
 // 验证登录权限
 function verifyLoginAuth (req, res, next) {
-  user.verifyLoginAuth(req).then(({ code }) => {
-    if (code === '0') return next()
-    thenHandel({ code }, res)
-  }).catch(e => catchHandel(e, res))
+  const language = String(req.get('language'))
+
+  user.verifyLoginAuth(req)
+    .then(({ code }) => {
+      if (code === '0') return next()
+      return thenHandel({ code })
+    })
+    .catch(error => catchHandel(error))
+    .then(data => data && formatJson(data, language, res))
 }
 
 // 业务逻辑处理成功
@@ -46,7 +51,7 @@ function thenHandel (result) {
   if (isObject(result) && result.code) {
     return result
   } else {
-    console.error('result must be an object and contain code \ncurrent result => ' + result)
+    console.error('thenHandel:\n result must be an object and contain code \ncurrent result => ' + result)
     return {
       code: 'N_000001',
       error: 'result must be an object and contain code'
@@ -56,7 +61,7 @@ function thenHandel (result) {
 
 // 业务逻辑处理报错
 function catchHandel (error) {
-  console.error(error)
+  console.error('catchHandel\n', error)
   return {
     code: 'N_000001',
     error: error.message
@@ -75,7 +80,7 @@ function formatJson ({ code, ...args }, language, res) {
   getMessage(code).then(message => {
     if (message && message[language]) data.message = message[language]
   }).catch((e) => {
-    console.error('获取提示语失败：', e)
+    console.error('获取提示语失败：\n', e)
   }).finally(() => {
     res.json(data)
     res.locals = data // 返回值记录到日志中
