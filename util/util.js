@@ -94,8 +94,8 @@ function isObject (target) {
  * @return {Object|undefined}
  */
 function formatSortJson (sort) {
-  sort = isObject(sort) && Object.keys(sort).length ? sort : undefined
-  if (isObject(sort)) {
+  sort = isObject(sort) && Object.keys(sort).length ? { ...sort } : undefined
+  if (sort) {
     for (const key in sort) {
       if (Object.hasOwnProperty.call(sort, key)) {
         sort[key] = sortMap[sort[key]] || 1
