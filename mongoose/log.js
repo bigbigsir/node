@@ -7,11 +7,23 @@ const schemaType = {
   body: String,
   query: String,
   method: String,
-  status: Number,
+  status: {
+    type: mongoose.Schema.Types.Mixed,
+    set (v) {
+      const number = Number(v)
+      return Object.is(number, NaN) ? v : number
+    }
+  },
   response: String,
   timestamp: Date,
-  responseTime: Number,
-  contentLength: Number,
+  responseTime: {
+    type: mongoose.Schema.Types.Mixed,
+    set (v) {
+      const number = Number(v)
+      return Object.is(number, NaN) ? v : number
+    }
+  },
+  contentLength: String,
   exp: { // 设置TTL, 10日后自动删除
     type: Date,
     default: Date.now,

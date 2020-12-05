@@ -1,6 +1,6 @@
 const mongoose = require('./connect')
 
-const schema = new mongoose.Schema({
+const schemaType = {
   key: {
     trim: true,
     type: String,
@@ -47,13 +47,16 @@ const schema = new mongoose.Schema({
     type: String,
     required: '{PATH} is required'
   }
-}, {
+}
+const schemaOptions = {
   versionKey: false,
   toJSON: { virtuals: true },
   timestamps: {
     createdAt: 'created',
     updatedAt: 'updated'
   }
-})
+}
+
+const schema = new mongoose.Schema(schemaType, schemaOptions)
 
 module.exports = mongoose.model('Project', schema, 'projects')
