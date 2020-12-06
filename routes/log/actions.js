@@ -24,7 +24,7 @@ function getLogList (req) {
   delete filter.loginName
 
   return Promise.all([
-    Log.count(filter),
+    Log.countDocuments(filter),
     Log.find(filter, select, options).skip((page - 1) * pageSize).limit(pageSize)
   ]).then(([count, data]) => {
     return {

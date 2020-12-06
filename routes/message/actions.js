@@ -52,7 +52,7 @@ function getMessageList (req) {
   delete filter.loginName
 
   return Promise.all([
-    Message.count(filter),
+    Message.countDocuments(filter),
     Message.find(filter, undefined, options).skip((page - 1) * pageSize).limit(pageSize)
   ]).then(([count, data]) => {
     return {

@@ -44,7 +44,7 @@ function getProjectList (req) {
   delete filter.loginName
 
   return Promise.all([
-    Project.count(filter),
+    Project.countDocuments(filter),
     Project.find(filter, undefined, options).skip((page - 1) * pageSize).limit(pageSize)
   ]).then(([count, data]) => {
     return {

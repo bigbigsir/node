@@ -293,7 +293,7 @@ function getUserList (req) {
   delete filter.loginName
 
   return Promise.all([
-    User.count(filter),
+    User.countDocuments(filter),
     User.find(filter, select, options).skip((page - 1) * pageSize).limit(pageSize).populate(populateOptions)
   ]).then(([count, data]) => {
     return {

@@ -50,7 +50,7 @@ function getRoleList (req) {
   delete filter.loginName
 
   return Promise.all([
-    Role.count(filter),
+    Role.countDocuments(filter),
     Role.find(filter, undefined, options).skip((page - 1) * pageSize).limit(pageSize)
   ]).then(([count, data]) => {
     return {

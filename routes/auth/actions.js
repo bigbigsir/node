@@ -58,7 +58,7 @@ function getAuthList (req) {
   delete filter.loginName
 
   return Promise.all([
-    Auth.count(filter),
+    Auth.countDocuments(filter),
     Auth.find(filter, undefined, options)
       .skip((page - 1) * pageSize)
       .limit(pageSize)
