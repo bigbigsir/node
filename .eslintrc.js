@@ -15,6 +15,5 @@ module.exports = {
     ecmaVersion: 11
   },
   rules: {
-    'space-before-function-paren': 'off'
   }
 }

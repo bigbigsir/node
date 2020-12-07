@@ -53,4 +53,4 @@ const schemaOptions = {
 
 const schema = new mongoose.Schema(schemaType, schemaOptions)
 
-module.exports = mongoose.model('User', schema)
+module.exports = mongoose.model('User', schema, 'users')
