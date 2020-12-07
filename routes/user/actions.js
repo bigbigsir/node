@@ -136,7 +136,7 @@ function signIn (req) {
   }
 }
 
-// 修改密码
+// 使用旧密码修改密码
 function updatePassword (req) {
   let { loginName, password, newPassword } = req.body
   password = privateDecrypt(password)
@@ -156,6 +156,46 @@ function updatePassword (req) {
       return { code: 'N_000002' }
     }
   })
+
+  // 标记该用户名的token为无效
+  function trashTokens (user) {
+    const username = user.username
+    const filter = {
+      username,
+      valid: true
+    }
+    return Token.updateMany(filter, { valid: false }).then(() => ({ code: '0' }))
+  }
+}
+
+// 使用邮箱修改密码
+function retrievePassword (req) {
+  let { email, password } = req.body
+  password = privateDecrypt(password)
+  return verifyEmailCode(req).then(({ code }) => {
+    if (code === '0') {
+      return findAndUpdate()
+    } else {
+      return { code }
+    }
+  })
+
+  function findAndUpdate () {
+    const query = {
+      email
+    }
+    const update = {
+      password
+    }
+
+    return User.findOne(query).then(user => {
+      if (user) {
+        return User.findByIdAndUpdate(user._id, update).then(trashTokens)
+      } else {
+        return { code: 'N_000016' }
+      }
+    })
+  }
 
   // 标记该用户名的token为无效
   function trashTokens (user) {
@@ -382,5 +422,6 @@ module.exports = {
   getUserList,
   resetPassword,
   verifyLoginAuth,
-  updatePassword
+  updatePassword,
+  retrievePassword
 }

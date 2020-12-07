@@ -76,7 +76,7 @@ const code = {
   },
   N_000016: {
     code: 'N_000016',
-    message: '没有此用户'
+    message: '此用户不存在'
   },
   N_000017: {
     code: 'N_000017',

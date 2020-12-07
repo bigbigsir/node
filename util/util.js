@@ -61,12 +61,12 @@ function md5Encrypt (str) {
 }
 
 /**
- * @description 生成指定位数随机数
+ * @description 生成指定位数随机数字
  * @param {Number} count 生成位数
  * @return {String}
  */
 function random (count = 6) {
-  const random = Math.floor(Math.random() * (1 + '0'.repeat(count)))
+  const random = String(Math.random()).slice(-count)
   return random.toString()
 }
 
