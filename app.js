@@ -21,6 +21,7 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', require('./routes/index'))
+app.use('/k8', require('./routes/k8_proxy'))
 app.use('/log', require('./routes/log'))
 app.use('/user', require('./routes/user'))
 app.use('/role', require('./routes/role'))

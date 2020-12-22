@@ -19,10 +19,10 @@ function verifyAuth (req, res, next) {
   const token = req.get('token')
   const payload = jwt.verifyToken(token) || {}
   const signStr = qid + reverseString(JSON.stringify(req.body)) + token
-  const publicPath = '^/webHooks/'
-  const passTokenPath = ['^/common/getWebToken$', '^/webHooks/']
+  const publicPath = ['^/k8/', '^/webHooks/']
+  const passTokenPath = ['^/k8/', '^/webHooks/', '^/common/getWebToken$']
 
-  const verifySign = new RegExp(publicPath).test(req.url) || md5Encrypt(signStr) === sign
+  const verifySign = new RegExp(publicPath.join('|')).test(req.url) || md5Encrypt(signStr) === sign
   const verifyToken = new RegExp(passTokenPath.join('|')).test(req.path) || appId === payload.appId
 
   if (!verifySign) { // 验证接口签名
