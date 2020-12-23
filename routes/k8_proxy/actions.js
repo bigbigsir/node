@@ -1,10 +1,7 @@
 'use strict'
+const http = require('../../util/axios')
 
-const express = require('express')
-const router = express.Router()
-const http = require('../util/axios')
-
-router.use((req, res) => {
+function K8Proxy (req) {
   const domain = req.get('domainName')
   const url = domain + req.url
   const method = req.method.toLowerCase()
@@ -19,9 +16,14 @@ router.use((req, res) => {
     'User-Agent': req.get('User-Agent'),
     'Content-Type': req.get('Content-Type')
   }
-  http[method](url, params, headers).then((data) => {
-    res.json(data)
+  return http[method](url, params, headers).then((data) => {
+    return {
+      code: '0',
+      ...data
+    }
   })
-})
+}
 
-module.exports = router
+module.exports = {
+  K8Proxy
+}
