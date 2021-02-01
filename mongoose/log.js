@@ -14,6 +14,10 @@ const schemaType = {
       return Object.is(number, NaN) ? v : number
     }
   },
+  location: {
+    type: String,
+    default: ''
+  },
   response: String,
   timestamp: Date,
   responseTime: {
@@ -24,6 +28,7 @@ const schemaType = {
     }
   },
   contentLength: String,
+
   exp: { // 设置TTL, 10日后自动删除
     type: Date,
     default: Date.now,

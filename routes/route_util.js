@@ -77,6 +77,7 @@ function formatJson ({ code, ...args }, language, res) {
     success: String(code) === 'N_000000',
     ...args
   }
+  // 获取提示言配置
   getMessage(code).then(message => {
     if (message && message[language]) data.message = message[language]
   }).catch((e) => {

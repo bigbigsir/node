@@ -15,13 +15,13 @@ function setHeader (req, res) {
 function verifyAuth (req, res, next) {
   const qid = req.get('qid')
   const sign = req.get('sign')
+  const data = /GET|DELETE/.test(String(req.method)) ? req.query : req.body
   const appId = req.get('app-id')
   const token = req.get('token')
   const payload = jwt.verifyToken(token) || {}
-  const signStr = qid + reverseString(JSON.stringify(req.body)) + token
-  const publicPath = ['^/k8/', '^/webHooks/']
-  const passTokenPath = ['^/k8/', '^/webHooks/', '^/common/getWebToken$']
-
+  const signStr = qid + reverseString(JSON.stringify(data))
+  const publicPath = ['^/webHooks/', '^/proxy/k8$']
+  const passTokenPath = ['^/webHooks/', '^/proxy/k8$', '^/common/getWebToken$']
   const verifySign = new RegExp(publicPath.join('|')).test(req.url) || md5Encrypt(signStr) === sign
   const verifyToken = new RegExp(passTokenPath.join('|')).test(req.path) || appId === payload.appId
 

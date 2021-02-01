@@ -1,14 +1,21 @@
 const { createRoute } = require('../route_util')
 const {
-  K8Proxy
+  k8Proxy,
+  ipLocation
 } = require('./actions')
 
 const routes = [
   {
-    path: '/',
+    path: '/k8',
     method: 'use',
     loginAuth: false,
-    action: K8Proxy
+    action: k8Proxy
+  },
+  {
+    path: '/ipLocation',
+    method: 'use',
+    loginAuth: false,
+    action: ipLocation
   }
 ]
 

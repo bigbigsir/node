@@ -1,10 +1,15 @@
 const Log = require('../../mongoose/log')
 const { formatSortJson } = require('../../util/util')
+const { getIpLocation } = require('../../routes/proxy/actions')
 
 // 添加日志
 function addLog (log) {
-  new Log(log).save().catch(e => {
-    console.error('记录日志错误：\n', e)
+  getIpLocation(log.ip).then(({ data }) => {
+    log.location = data && data[0] && data[0].location
+  }).finally(() => {
+    new Log(log).save().catch(e => {
+      console.error('记录日志错误：\n', e)
+    })
   })
 }
 
