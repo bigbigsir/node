@@ -16,10 +16,6 @@ morgan.token('date', () => {
   return moment().format('YYYY-MM-DD hh:mm:ss')
 })
 
-morgan.token('timestamp', () => {
-  return Date.now()
-})
-
 morgan.token('body', (req) => {
   const body = req.body
   const bodyStr = JSON.stringify(body)
@@ -40,6 +36,10 @@ morgan.token('query', (req) => {
   }
 })
 
+morgan.token('pathname', (req) => {
+  return req.originalUrl.replace(/\?.*/, '')
+})
+
 morgan.token('response', (req, res) => {
   const response = res.locals
   const responseStr = JSON.stringify(response)
@@ -48,6 +48,10 @@ morgan.token('response', (req, res) => {
   } else {
     return ''
   }
+})
+
+morgan.token('timestamp', () => {
+  return Date.now()
 })
 
 const fmt = [
@@ -67,7 +71,7 @@ const fmt = [
 const formatJson = json({
   ip: ':ip',
   qid: ':qid',
-  url: ':url',
+  url: ':pathname',
   body: ':body',
   query: ':query',
   method: ':method',
