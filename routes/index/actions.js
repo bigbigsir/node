@@ -20,8 +20,8 @@ function verifyAuth (req, res, next) {
   const token = req.get('token')
   const payload = jwt.verifyToken(token) || {}
   const signStr = qid + reverseString(JSON.stringify(data))
-  const publicPath = ['^/webHooks/', '^/proxy/k8$']
-  const passTokenPath = ['^/webHooks/', '^/proxy/k8$', '^/common/getWebToken$']
+  const publicPath = ['^/webHooks/', '^/proxy/k8/']
+  const passTokenPath = ['^/webHooks/', '^/proxy/k8/', '^/common/getWebToken$']
   const verifySign = new RegExp(publicPath.join('|')).test(req.url) || md5Encrypt(signStr) === sign
   const verifyToken = new RegExp(passTokenPath.join('|')).test(req.path) || appId === payload.appId
 
